@@ -13,5 +13,6 @@ export const login = async (req: Request, res: Response) => {
   }
 
   // Send a token in the request header
-  return res.status(200).send({ message: `welcome ${checkUser.name}` });
+  const token = checkUser.getAuthToken();
+  return res.status(200).send({ message: `${token}` });
 };

@@ -42,7 +42,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var User_1 = require("../models/User");
 var bcrypt_1 = __importDefault(require("bcrypt"));
 exports.login = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, email, password, checkUser, passwordMatch;
+    var _a, email, password, checkUser, passwordMatch, token;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
@@ -58,8 +58,8 @@ exports.login = function (req, res) { return __awaiter(void 0, void 0, void 0, f
                 if (!passwordMatch) {
                     return [2 /*return*/, res.status(404).send({ message: 'Password is incorrect.' })];
                 }
-                // Send a token in the request header
-                return [2 /*return*/, res.status(200).send({ message: "welcome " + checkUser.name })];
+                token = checkUser.getAuthToken();
+                return [2 /*return*/, res.status(200).send({ message: "" + token })];
         }
     });
 }); };
