@@ -25,7 +25,10 @@
     "typescript": "^3.6.3"
   },
   "dependencies": {
+    "@types/mongoose": "^5.5.18",
     "express": "^4.17.1",
+    "mongoose": "^5.7.1",
+    "ts-mongoose": "0.0.19",
     "tslint-config-airbnb": "^5.11.2"
   }
 }
