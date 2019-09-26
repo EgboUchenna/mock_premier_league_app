@@ -50,7 +50,10 @@ export const createTeam = async (req: Request, res: Response) => {
 
 export const updateTeam = async (req: Request, res: Response) => {
   try {
-    const updateTeam = await Team.findByIdAndUpdate(req.params.id, req.body);
+    const updateTeam = await Team.findByIdAndUpdate(
+      { _id: req.params.id },
+      req.body,
+    );
 
     res.status(200).send(`Team ${updateTeam.name} has been updated succesfully.`);
   } catch (error) {
@@ -61,7 +64,7 @@ export const updateTeam = async (req: Request, res: Response) => {
 export const deleteTeam = async (req: Request, res: Response) => {
   try {
     const deleteTeam = await Team.findByIdAndDelete({ _id: req.params.id });
-    res.status(200).send(`Team ${deleteTeam.name} has been deleted succesfully`);
+    res.status(200).send(`Team ${deleteTeam.name} has been deleted succesfully.`);
   } catch (error) {
     res.status(400).send(error.message);
   }

@@ -97,7 +97,7 @@ exports.updateTeam = function (req, res) { return __awaiter(void 0, void 0, void
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, team_1.Team.findByIdAndUpdate(req.params.id, req.body)];
+                return [4 /*yield*/, team_1.Team.findByIdAndUpdate({ _id: req.params.id }, req.body)];
             case 1:
                 updateTeam_1 = _a.sent();
                 res.status(200).send("Team " + updateTeam_1.name + " has been updated succesfully.");
@@ -119,7 +119,7 @@ exports.deleteTeam = function (req, res) { return __awaiter(void 0, void 0, void
                 return [4 /*yield*/, team_1.Team.findByIdAndDelete({ _id: req.params.id })];
             case 1:
                 deleteTeam_1 = _a.sent();
-                res.status(200).send("Team " + deleteTeam_1.name + " has been deleted succesfully");
+                res.status(200).send("Team " + deleteTeam_1.name + " has been deleted succesfully.");
                 return [3 /*break*/, 3];
             case 2:
                 error_3 = _a.sent();
