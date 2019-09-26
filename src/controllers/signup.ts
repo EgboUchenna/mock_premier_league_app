@@ -9,12 +9,16 @@ export const signup = async (req: Request, res: Response) => {
 
   try {
     const { name, email } = req.body;
-    const user = await new User(req.body);
+    let user = await User.findOne({ email });
+    if (user) return res.status(400).send(`Email already exists.`);
+
+    user = await new User(req.body);
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(user.password, salt);
     await user.save();
     const data = { name, email };
-    return res.status(200).send({
+    const token = user.getAuthToken();
+    res.header('x-auth-token', token).send({
       data,
       output: 'Sign up successful.',
     });

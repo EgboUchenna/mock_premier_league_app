@@ -16,10 +16,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var ts_mongoose_1 = require("ts-mongoose");
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-var config_1 = __importDefault(require("config"));
+var key = require('../config/keys').key;
 var UserSchema = ts_mongoose_1.createSchema(__assign({ name: ts_mongoose_1.Type.string(), email: ts_mongoose_1.Type.string({ unque: true }), password: ts_mongoose_1.Type.string(), isAdmin: ts_mongoose_1.Type.optionalBoolean() }, {}));
 UserSchema.methods.getAuthToken = function () {
-    var token = jsonwebtoken_1.default.sign({ _id: this._id, isAdmin: this.isAdmin }, config_1.default.get('jwtPrivateKey'));
+    var token = jsonwebtoken_1.default.sign({ _id: this._id, isAdmin: this.isAdmin }, key);
     return token;
 };
 exports.User = ts_mongoose_1.typedModel('User', UserSchema);

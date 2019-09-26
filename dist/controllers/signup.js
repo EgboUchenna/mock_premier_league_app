@@ -43,7 +43,7 @@ var User_1 = require("../models/User");
 var user_1 = require("../validation/user");
 var bcrypt_1 = __importDefault(require("bcrypt"));
 exports.signup = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var error, _a, name_1, email, user, salt, _b, data, error_1, message;
+    var error, _a, name_1, email, user, salt, _b, data, token, error_1, message;
     return __generator(this, function (_c) {
         switch (_c.label) {
             case 0:
@@ -52,34 +52,41 @@ exports.signup = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                     return [2 /*return*/, res.status(404).send({ error: error.details[0].message })];
                 _c.label = 1;
             case 1:
-                _c.trys.push([1, 6, , 7]);
+                _c.trys.push([1, 7, , 8]);
                 _a = req.body, name_1 = _a.name, email = _a.email;
-                return [4 /*yield*/, new User_1.User(req.body)];
+                return [4 /*yield*/, User_1.User.findOne({ email: email })];
             case 2:
                 user = _c.sent();
-                return [4 /*yield*/, bcrypt_1.default.genSalt(10)];
+                if (user)
+                    return [2 /*return*/, res.status(400).send("Email already exists.")];
+                return [4 /*yield*/, new User_1.User(req.body)];
             case 3:
+                user = _c.sent();
+                return [4 /*yield*/, bcrypt_1.default.genSalt(10)];
+            case 4:
                 salt = _c.sent();
                 _b = user;
                 return [4 /*yield*/, bcrypt_1.default.hash(user.password, salt)];
-            case 4:
+            case 5:
                 _b.password = _c.sent();
                 return [4 /*yield*/, user.save()];
-            case 5:
+            case 6:
                 _c.sent();
                 data = { name: name_1, email: email };
-                return [2 /*return*/, res.status(200).send({
-                        data: data,
-                        output: 'Sign up successful.',
-                    })];
-            case 6:
+                token = user.getAuthToken();
+                res.header('x-auth-token', token).send({
+                    data: data,
+                    output: 'Sign up successful.',
+                });
+                return [3 /*break*/, 8];
+            case 7:
                 error_1 = _c.sent();
                 message = error_1.message;
                 return [2 /*return*/, res.status(400).send({
                         message: message,
                         output: 'Sign up failed.',
                     })];
-            case 7: return [2 /*return*/];
+            case 8: return [2 /*return*/];
         }
     });
 }); };
