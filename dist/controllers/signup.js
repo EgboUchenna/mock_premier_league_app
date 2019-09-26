@@ -35,40 +35,51 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var User_1 = require("../models/User");
 var user_1 = require("../validation/user");
+var bcrypt_1 = __importDefault(require("bcrypt"));
 exports.signup = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var error, _a, name_1, email, user, data, error_1, message;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+    var error, _a, name_1, email, user, salt, _b, data, error_1, message;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
             case 0:
                 error = user_1.validateUser(req.body).error;
                 if (error)
                     return [2 /*return*/, res.status(404).send({ error: error.details[0].message })];
-                _b.label = 1;
+                _c.label = 1;
             case 1:
-                _b.trys.push([1, 4, , 5]);
+                _c.trys.push([1, 6, , 7]);
                 _a = req.body, name_1 = _a.name, email = _a.email;
                 return [4 /*yield*/, new User_1.User(req.body)];
             case 2:
-                user = _b.sent();
-                return [4 /*yield*/, user.save()];
+                user = _c.sent();
+                return [4 /*yield*/, bcrypt_1.default.genSalt(10)];
             case 3:
-                _b.sent();
+                salt = _c.sent();
+                _b = user;
+                return [4 /*yield*/, bcrypt_1.default.hash(user.password, salt)];
+            case 4:
+                _b.password = _c.sent();
+                return [4 /*yield*/, user.save()];
+            case 5:
+                _c.sent();
                 data = { name: name_1, email: email };
                 return [2 /*return*/, res.status(200).send({
                         data: data,
                         output: 'Sign up successful.',
                     })];
-            case 4:
-                error_1 = _b.sent();
+            case 6:
+                error_1 = _c.sent();
                 message = error_1.message;
                 return [2 /*return*/, res.status(400).send({
                         message: message,
                         output: 'Sign up failed.',
                     })];
-            case 5: return [2 /*return*/];
+            case 7: return [2 /*return*/];
         }
     });
 }); };
