@@ -1,6 +1,8 @@
+// tslint:disable: import-name
 import express from 'express';
 import mongoose from 'mongoose';
-import userRouter from './routes/api/index';
+import apiRouter from './routes/api';
+
 import bodyParser from 'body-parser';
 
 const app = express();
@@ -21,7 +23,7 @@ mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
 
 // Use Routes
-app.use('/', userRouter);
+app.use('/api/v1', apiRouter);
 
 const port = process.env.PORT || 4000;
 

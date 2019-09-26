@@ -3,9 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+// tslint:disable: import-name
 var express_1 = __importDefault(require("express"));
 var mongoose_1 = __importDefault(require("mongoose"));
-var index_1 = __importDefault(require("./routes/api/index"));
+var api_1 = __importDefault(require("./routes/api"));
 var body_parser_1 = __importDefault(require("body-parser"));
 var app = express_1.default();
 // Body Parser middleware
@@ -21,7 +22,7 @@ mongoose_1.default
 mongoose_1.default.set('useFindAndModify', false);
 mongoose_1.default.set('useCreateIndex', true);
 // Use Routes
-app.use('/', index_1.default);
+app.use('/api/v1', api_1.default);
 var port = process.env.PORT || 4000;
 app.listen(port, function () { return console.log("Server running on port " + port); });
 //# sourceMappingURL=app.js.map
