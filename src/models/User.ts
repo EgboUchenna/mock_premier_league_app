@@ -1,3 +1,5 @@
+// tslint:disable: variable-name
+// tslint:disable: import-name
 import { createSchema, Type, typedModel } from 'ts-mongoose';
 import jwt from 'jsonwebtoken';
 const { key } = require('../config/keys');
