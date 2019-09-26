@@ -2,7 +2,7 @@ import { createSchema, Type, typedModel } from 'ts-mongoose';
 
 const TeamSchema = createSchema({
   name: Type.string(),
-  nick_name: Type.string(),
+  nick_name: Type.string({ unique: true }),
   website: Type.string(),
   coach: Type.string(),
   founded: Type.number(),
