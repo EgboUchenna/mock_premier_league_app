@@ -47,3 +47,22 @@ export const createTeam = async (req: Request, res: Response) => {
 
   res.send({ message: `Team ${name} created succesfully, A.K.A ${nick_name}` });
 };
+
+export const updateTeam = async (req: Request, res: Response) => {
+  try {
+    const updateTeam = await Team.findByIdAndUpdate(req.params.id, req.body);
+
+    res.status(200).send(`Team ${updateTeam.name} has been updated succesfully.`);
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+};
+
+export const deleteTeam = async (req: Request, res: Response) => {
+  try {
+    const deleteTeam = await Team.findByIdAndDelete({ _id: req.params.id });
+    res.status(200).send(`Team ${deleteTeam.name} has been deleted succesfully`);
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+};

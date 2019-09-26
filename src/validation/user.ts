@@ -1,3 +1,4 @@
+// tslint:disable-next-line: import-name
 import Joi from 'joi';
 
 export const validateUser = (input: object) => {

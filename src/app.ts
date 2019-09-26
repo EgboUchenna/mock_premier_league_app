@@ -6,7 +6,6 @@ import bodyParser from 'body-parser';
 const app = express();
 
 // Body Parser middleware
-
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
