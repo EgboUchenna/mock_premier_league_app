@@ -53,3 +53,15 @@ export const getFixture = (req: Request, res: Response) => {
   const fixture = Fixture.findById({ id }).exec;
   res.send(fixture);
 };
+
+export const updateFixture = async (req: Request, res: Response) => {
+  try {
+    const updateFixture = await Fixture.findByIdAndUpdate(
+      { _id: req.params.id },
+      req.body,
+    );
+    res.status(200).send(`Fixture ${updateFixture._id} was updated succesfully.`);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+};
