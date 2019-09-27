@@ -131,7 +131,9 @@ exports.updateFixture = function (req, res) { return __awaiter(void 0, void 0, v
                 return [4 /*yield*/, Fixture_1.Fixture.findByIdAndUpdate({ _id: req.params.id }, req.body)];
             case 1:
                 updateFixture_1 = _a.sent();
-                res.status(200).send("Fixture " + updateFixture_1._id + " was updated succesfully.");
+                if (updateFixture_1) {
+                    res.status(200).send("Fixture " + updateFixture_1._id + " was updated succesfully.");
+                }
                 return [3 /*break*/, 3];
             case 2:
                 error_2 = _a.sent();
@@ -150,7 +152,9 @@ exports.deleteFixture = function (req, res) { return __awaiter(void 0, void 0, v
                 return [4 /*yield*/, Fixture_1.Fixture.findByIdAndDelete({ _id: req.params.id })];
             case 1:
                 deleteFixture_1 = _a.sent();
-                res.status(200).send("Fixture " + deleteFixture_1._id + " was deleted succesfully.");
+                if (deleteFixture_1) {
+                    res.status(200).send("Fixture " + deleteFixture_1._id + " was deleted succesfully.");
+                }
                 return [3 /*break*/, 3];
             case 2:
                 error_3 = _a.sent();

@@ -3,7 +3,7 @@ import fixtures from './seed/fixtures';
 import users from './seed/users';
 import { Team } from '../models/Team';
 import { Fixture } from '../models/Fixture';
-import { User } from '../models/user';
+import { User } from '../models/User';
 import bcrypt from 'bcrypt';
 
 const cleanDb = async () => {
@@ -53,12 +53,14 @@ const seedFixture = async () => {
     const allfixtures = fixtures.map(async (fixture) => {
       const hometeam = await Team.findOne({ name: fixture.homeTeam }).exec();
       const awayteam = await Team.findOne({ name: fixture.awayTeam }).exec();
-      const newFixtures = await new Fixture({
-        ...fixture,
-        homeTeam: hometeam.id,
-        awayTeam: awayteam.id,
-      });
-      await newFixtures.save();
+      if (hometeam && awayteam) {
+        const newFixtures = new Fixture({
+          ...fixture,
+          homeTeam: hometeam.id,
+          awayTeam: awayteam.id,
+        });
+        await newFixtures.save();
+      }
     });
     const res = await Promise.all(allfixtures);
     return res;

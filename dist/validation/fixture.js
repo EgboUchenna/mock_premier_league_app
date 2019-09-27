@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 // tslint:disable: import-name
 var joi_1 = __importDefault(require("joi"));
+// @ts-ignore
 var joi_objectid_1 = __importDefault(require("joi-objectid"));
 var myJoiObjectId = joi_objectid_1.default(joi_1.default);
 exports.validateFixture = function (input) {

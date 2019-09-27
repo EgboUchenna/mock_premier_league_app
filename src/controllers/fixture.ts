@@ -80,7 +80,9 @@ export const updateFixture = async (req: Request, res: Response) => {
       { _id: req.params.id },
       req.body,
     );
-    res.status(200).send(`Fixture ${updateFixture._id} was updated succesfully.`);
+    if (updateFixture) {
+      res.status(200).send(`Fixture ${updateFixture._id} was updated succesfully.`);
+    }
   } catch (error) {
     res.status(400).send(error);
   }
@@ -89,7 +91,9 @@ export const updateFixture = async (req: Request, res: Response) => {
 export const deleteFixture = async (req: Request, res: Response) => {
   try {
     const deleteFixture = await Fixture.findByIdAndDelete({ _id: req.params.id });
-    res.status(200).send(`Fixture ${deleteFixture._id} was deleted succesfully.`);
+    if (deleteFixture) {
+      res.status(200).send(`Fixture ${deleteFixture._id} was deleted succesfully.`);
+    }
   } catch (error) {
     res.status(400).send(`delete failed :()`);
   }

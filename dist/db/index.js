@@ -55,7 +55,7 @@ var fixtures_1 = __importDefault(require("./seed/fixtures"));
 var users_1 = __importDefault(require("./seed/users"));
 var Team_1 = require("../models/Team");
 var Fixture_1 = require("../models/Fixture");
-var user_1 = require("../models/user");
+var User_1 = require("../models/User");
 var bcrypt_1 = __importDefault(require("bcrypt"));
 var cleanDb = function () { return __awaiter(void 0, void 0, void 0, function () {
     var err_1;
@@ -70,7 +70,7 @@ var cleanDb = function () { return __awaiter(void 0, void 0, void 0, function ()
                 return [4 /*yield*/, Fixture_1.Fixture.deleteMany({})];
             case 2:
                 _a.sent();
-                return [4 /*yield*/, user_1.User.deleteMany({})];
+                return [4 /*yield*/, User_1.User.deleteMany({})];
             case 3:
                 _a.sent();
                 return [3 /*break*/, 5];
@@ -128,7 +128,7 @@ var seedUser = function () { return __awaiter(void 0, void 0, void 0, function (
                                 return [4 /*yield*/, bcrypt_1.default.hash(user.password, salt)];
                             case 2:
                                 _a.password = _b.sent();
-                                return [4 /*yield*/, new user_1.User(user)];
+                                return [4 /*yield*/, new User_1.User(user)];
                             case 3:
                                 newUser = _b.sent();
                                 return [2 /*return*/, newUser.save()];
@@ -163,13 +163,13 @@ var seedFixture = function () { return __awaiter(void 0, void 0, void 0, functio
                                 return [4 /*yield*/, Team_1.Team.findOne({ name: fixture.awayTeam }).exec()];
                             case 2:
                                 awayteam = _a.sent();
-                                return [4 /*yield*/, new Fixture_1.Fixture(__assign(__assign({}, fixture), { homeTeam: hometeam.id, awayTeam: awayteam.id }))];
-                            case 3:
-                                newFixtures = _a.sent();
+                                if (!(hometeam && awayteam)) return [3 /*break*/, 4];
+                                newFixtures = new Fixture_1.Fixture(__assign(__assign({}, fixture), { homeTeam: hometeam.id, awayTeam: awayteam.id }));
                                 return [4 /*yield*/, newFixtures.save()];
-                            case 4:
+                            case 3:
                                 _a.sent();
-                                return [2 /*return*/];
+                                _a.label = 4;
+                            case 4: return [2 /*return*/];
                         }
                     });
                 }); });

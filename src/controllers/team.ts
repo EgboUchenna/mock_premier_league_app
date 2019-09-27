@@ -54,8 +54,9 @@ export const updateTeam = async (req: Request, res: Response) => {
       { _id: req.params.id },
       req.body,
     );
-
-    res.status(200).send(`Team ${updateTeam.name} has been updated succesfully.`);
+    if (updateTeam) {
+      res.status(200).send(`Team ${updateTeam.name} has been updated succesfully.`);
+    }
   } catch (error) {
     res.status(400).send(error.message);
   }
@@ -64,7 +65,9 @@ export const updateTeam = async (req: Request, res: Response) => {
 export const deleteTeam = async (req: Request, res: Response) => {
   try {
     const deleteTeam = await Team.findByIdAndDelete({ _id: req.params.id });
-    res.status(200).send(`Team ${deleteTeam.name} has been deleted succesfully.`);
+    if (deleteTeam) {
+      res.status(200).send(`Team ${deleteTeam.name} has been deleted succesfully.`);
+    }
   } catch (error) {
     res.status(400).send(error.message);
   }
