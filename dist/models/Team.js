@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var ts_mongoose_1 = require("ts-mongoose");
-var TeamSchema = ts_mongoose_1.createSchema({
+exports.TeamSchema = ts_mongoose_1.createSchema({
     name: ts_mongoose_1.Type.string(),
     nick_name: ts_mongoose_1.Type.string({ unique: true }),
     website: ts_mongoose_1.Type.string(),
@@ -10,5 +10,5 @@ var TeamSchema = ts_mongoose_1.createSchema({
     stadium_name: ts_mongoose_1.Type.string(),
     stadium_capacity: ts_mongoose_1.Type.string(),
 });
-exports.Team = ts_mongoose_1.typedModel('Team', TeamSchema);
+exports.Team = ts_mongoose_1.typedModel('Team', exports.TeamSchema);
 //# sourceMappingURL=team.js.map

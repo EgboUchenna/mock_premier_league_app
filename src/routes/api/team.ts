@@ -8,9 +8,9 @@ import {
 const router = Router();
 
 router
-  .get('/api/view-teams/', viewTeams)
-  .post('/api/create-team', createTeam)
-  .put('/api/update-team/:id', updateTeam)
-  .delete('/api/delete-team/:id', deleteTeam);
+  .get('/', viewTeams)
+  .post('/', createTeam)
+  .put('/:id', updateTeam)
+  .delete('/:id', deleteTeam);
 
 export default router;
