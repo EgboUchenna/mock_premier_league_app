@@ -1,12 +1,11 @@
 // tslint:disable: variable-name
 import { createSchema, Type, typedModel } from 'ts-mongoose';
-import { Team } from './Team';
 
 const FixtureSchema = createSchema({
-  homeTeam: Type.objectId(),
-  awayTeam: Type.objectId(),
-  homeScore: Type.number(),
-  awayScore: Type.number(),
+  homeTeam: Type.objectId({ ref: 'Team' }),
+  awayTeam: Type.objectId({ ref: 'Team' }),
+  homeScore: Type.number({ default: 0 }),
+  awayScore: Type.number({ default: 0 }),
   time: Type.string(),
   stadium: Type.string(),
   played: Type.optionalBoolean({ default: false }),
