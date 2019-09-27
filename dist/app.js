@@ -16,7 +16,10 @@ app.use(body_parser_1.default.json());
 var db = require('./config/keys').mongoURI;
 // Connect to MongoDB
 mongoose_1.default
-    .connect(db, { useNewUrlParser: true })
+    .connect(db, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+})
     .then(function () { return console.log('MongoDB connected'); })
     .catch(function (err) { return console.log(err); });
 mongoose_1.default.set('useFindAndModify', false);
