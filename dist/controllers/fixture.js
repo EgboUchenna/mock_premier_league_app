@@ -37,6 +37,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var Fixture_1 = require("../models/Fixture");
+var Team_1 = require("../models/Team");
+var fixture_1 = require("../validation/fixture");
 exports.viewFixtures = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var fixtures;
     return __generator(this, function (_a) {
@@ -49,4 +51,51 @@ exports.viewFixtures = function (req, res) { return __awaiter(void 0, void 0, vo
         }
     });
 }); };
+exports.createFixtures = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var error, _a, homeTeam, awayTeam, homeScore, awayScore, time, stadium, played, home, away, fixture, error_1;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                error = fixture_1.validateFixture(req.body).error;
+                if (error)
+                    return [2 /*return*/, res.status(400).send(error.details[0].message)];
+                _a = req.body, homeTeam = _a.homeTeam, awayTeam = _a.awayTeam, homeScore = _a.homeScore, awayScore = _a.awayScore, time = _a.time, stadium = _a.stadium, played = _a.played;
+                return [4 /*yield*/, Team_1.Team.findById(homeTeam).select({ name: 1, coach: 1 })];
+            case 1:
+                home = _b.sent();
+                if (!home)
+                    return [2 /*return*/, res.status(400).send("Home Team not found")];
+                return [4 /*yield*/, Team_1.Team.findById(awayTeam).select({ name: 1, coach: 1 })];
+            case 2:
+                away = _b.sent();
+                if (!away)
+                    return [2 /*return*/, res.status(400).send("Away Team not found")];
+                _b.label = 3;
+            case 3:
+                _b.trys.push([3, 5, , 6]);
+                fixture = new Fixture_1.Fixture({
+                    homeTeam: homeTeam,
+                    awayTeam: awayTeam,
+                    homeScore: homeScore,
+                    awayScore: awayScore,
+                    time: time,
+                    stadium: stadium,
+                    played: played,
+                });
+                return [4 /*yield*/, fixture.save()];
+            case 4:
+                _b.sent();
+                return [2 /*return*/, res.status(200).send(fixture)];
+            case 5:
+                error_1 = _b.sent();
+                return [2 /*return*/, res.status(400).send({ Error: error_1.message })];
+            case 6: return [2 /*return*/];
+        }
+    });
+}); };
+exports.getFixture = function (req, res) {
+    var id = req.query.id;
+    var fixture = Fixture_1.Fixture.findById({ id: id }).exec;
+    res.send(fixture);
+};
 //# sourceMappingURL=fixture.js.map

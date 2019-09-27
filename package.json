@@ -49,6 +49,9 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.7.1",
     "ts-mongoose": "0.0.19",
+    "objectid": "^3.2.1",
+    "redis": "^2.8.0",
+    "shortid": "^2.2.14",
     "tslint-config-airbnb": "^5.11.2"
   }
 }
