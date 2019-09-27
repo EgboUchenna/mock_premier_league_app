@@ -1,8 +1,10 @@
 import { Router } from 'express';
 import {
-  viewFixtures,
   createFixtures,
+  deleteFixture,
   getFixture,
+  updateFixture,
+  viewFixtures,
 } from '../../controllers/fixture';
 
 const router = Router();
@@ -10,6 +12,8 @@ const router = Router();
 router
   .get('/', viewFixtures)
   .get('/one', getFixture)
-  .post('/', createFixtures);
+  .post('/', createFixtures)
+  .put('/:id', updateFixture)
+  .delete('/:id', deleteFixture);
 
 export default router;
