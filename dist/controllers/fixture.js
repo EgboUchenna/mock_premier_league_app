@@ -43,10 +43,34 @@ exports.viewFixtures = function (req, res) { return __awaiter(void 0, void 0, vo
     var fixtures;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, Fixture_1.Fixture.find()];
+            case 0: return [4 /*yield*/, Fixture_1.Fixture.find().populate('homeTeam awayTeam', 'name coach -_id')];
             case 1:
                 fixtures = _a.sent();
-                res.send(fixtures);
+                res.status(200).send(fixtures);
+                return [2 /*return*/];
+        }
+    });
+}); };
+exports.viewPlayedMatches = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var playedMatches;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, Fixture_1.Fixture.find({ played: true }).populate('homeTeam awayTeam', 'name coach -_id')];
+            case 1:
+                playedMatches = _a.sent();
+                res.status(200).send(playedMatches);
+                return [2 /*return*/];
+        }
+    });
+}); };
+exports.viewPendingMatches = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var pendingMatches;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, Fixture_1.Fixture.find({ played: false }).populate('homeTeam awayTeam', 'name coach -_id')];
+            case 1:
+                pendingMatches = _a.sent();
+                res.status(200).send(pendingMatches);
                 return [2 /*return*/];
         }
     });
