@@ -1,5 +1,5 @@
-import { Team } from '../models/team';
-import { validateTeam } from '../validation/team'
+import { Team } from '../models/Team';
+import { validateTeam } from '../validation/team';
 import { Request, Response } from 'express';
 
 export const viewTeams = async (req: Request, res: Response) => {
@@ -33,7 +33,7 @@ export const createTeam = async (req: Request, res: Response) => {
     return res.status(404).send({ message: `Nick name already in use` });
   }
 
-  const newTeam = await new Team({
+  const newTeam = new Team({
     name,
     nick_name,
     website,
