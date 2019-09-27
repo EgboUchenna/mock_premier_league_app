@@ -1,3 +1,4 @@
+// tslint:disable: variable-name
 import { createSchema, Type, typedModel } from 'ts-mongoose';
 
 export const TeamSchema = createSchema({

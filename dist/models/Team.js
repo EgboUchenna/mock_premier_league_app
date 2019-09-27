@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+// tslint:disable: variable-name
 var ts_mongoose_1 = require("ts-mongoose");
 exports.TeamSchema = ts_mongoose_1.createSchema({
     name: ts_mongoose_1.Type.string(),

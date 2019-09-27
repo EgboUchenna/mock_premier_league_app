@@ -42,13 +42,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // tslint:disable: import-name
 var express_1 = __importDefault(require("express"));
 var mongoose_1 = __importDefault(require("mongoose"));
+var redis_1 = __importDefault(require("redis"));
+var express_session_1 = __importDefault(require("express-session"));
+var connect_redis_1 = __importDefault(require("connect-redis"));
 var api_1 = __importDefault(require("./routes/api"));
 var dotenv_1 = __importDefault(require("dotenv"));
 var index_1 = __importDefault(require("./db/index"));
 var body_parser_1 = __importDefault(require("body-parser"));
 var helmet_1 = __importDefault(require("helmet"));
 var cors_1 = __importDefault(require("cors"));
+var key = require('./config/keys').key;
 dotenv_1.default.config();
+var redisStore = connect_redis_1.default(express_session_1.default);
+var client = redis_1.default.createClient();
 var app = express_1.default();
 // Body Parser middleware
 app.use(body_parser_1.default.urlencoded({ extended: false }));
@@ -82,10 +88,28 @@ mongoose_1.default
     .catch(function (err) { return console.log(err); });
 mongoose_1.default.set('useFindAndModify', false);
 mongoose_1.default.set('useCreateIndex', true);
+try {
+    app.use(express_session_1.default({
+        secret: key,
+        // create new redis store.
+        store: new redisStore({
+            client: client,
+            host: 'localhost',
+            port: 6379,
+            ttl: 1800,
+        }),
+        saveUninitialized: false,
+        resave: false,
+    }));
+}
+catch (error) {
+    console.log({ error: error });
+}
 app.use(cors_1.default());
 app.use(helmet_1.default());
 // Use Routes
 app.use('/api/v1', api_1.default);
 var port = process.env.PORT || 4000;
 app.listen(port, function () { return console.log("Server running on port " + port); });
+exports.default = app;
 //# sourceMappingURL=app.js.map

@@ -1,15 +1,20 @@
 // tslint:disable: import-name
 import express from 'express';
 import mongoose from 'mongoose';
+import redis from 'redis';
+import session from 'express-session';
+import connectRedis from 'connect-redis';
 import apiRouter from './routes/api';
 import dotenv from 'dotenv';
 import seedDb from './db/index';
-
 import bodyParser from 'body-parser';
 import helmet from 'helmet';
 import cors from 'cors';
 
+const { key } = require('./config/keys');
 dotenv.config();
+const redisStore = connectRedis(session);
+const client = redis.createClient();
 
 const app = express();
 
@@ -34,6 +39,25 @@ mongoose
 mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
 
+try {
+  app.use(
+    session({
+      secret: key,
+      // create new redis store.
+      store: new redisStore({
+        client,
+        host: 'localhost',
+        port: 6379,
+        ttl: 1800,
+      }),
+      saveUninitialized: false,
+      resave: false,
+    }),
+  );
+} catch (error) {
+  console.log({ error });
+}
+
 app.use(cors());
 app.use(helmet());
 
@@ -43,3 +67,5 @@ app.use('/api/v1', apiRouter);
 const port = process.env.PORT || 4000;
 
 app.listen(port, () => console.log(`Server running on port ${port}`));
+
+export default app;
