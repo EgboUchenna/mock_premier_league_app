@@ -117,4 +117,23 @@ exports.updateFixture = function (req, res) { return __awaiter(void 0, void 0, v
         }
     });
 }); };
+exports.deleteFixture = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var deleteFixture_1, error_3;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, Fixture_1.Fixture.findByIdAndDelete({ _id: req.params.id })];
+            case 1:
+                deleteFixture_1 = _a.sent();
+                res.status(200).send("Fixture " + deleteFixture_1._id + " was deleted succesfully.");
+                return [3 /*break*/, 3];
+            case 2:
+                error_3 = _a.sent();
+                res.status(400).send("delete failed :()");
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
 //# sourceMappingURL=fixture.js.map

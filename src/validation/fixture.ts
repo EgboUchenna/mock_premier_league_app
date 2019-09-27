@@ -9,7 +9,7 @@ export const validateFixture = (input: object) => {
     awayTeam: myJoiObjectId().required(),
     homeScore: Joi.number(),
     awayScore: Joi.number(),
-    time: Joi.number(),
+    time: Joi.string(),
     stadium: Joi.string(),
     played: Joi.boolean(),
   };

@@ -13,7 +13,7 @@ exports.validateFixture = function (input) {
         awayTeam: myJoiObjectId().required(),
         homeScore: joi_1.default.number(),
         awayScore: joi_1.default.number(),
-        time: joi_1.default.number(),
+        time: joi_1.default.string(),
         stadium: joi_1.default.string(),
         played: joi_1.default.boolean(),
     };

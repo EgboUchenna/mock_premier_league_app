@@ -65,3 +65,12 @@ export const updateFixture = async (req: Request, res: Response) => {
     res.status(400).send(error);
   }
 };
+
+export const deleteFixture = async (req: Request, res: Response) => {
+  try {
+    const deleteFixture = await Fixture.findByIdAndDelete({ _id: req.params.id });
+    res.status(200).send(`Fixture ${deleteFixture._id} was deleted succesfully.`);
+  } catch (error) {
+    res.status(400).send(`delete failed :()`);
+  }
+};
