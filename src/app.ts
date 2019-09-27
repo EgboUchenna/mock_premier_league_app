@@ -2,8 +2,14 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import apiRouter from './routes/api';
+import dotenv from 'dotenv';
+import seedDb from './db/index';
 
 import bodyParser from 'body-parser';
+import helmet from 'helmet';
+import cors from 'cors';
+
+dotenv.config();
 
 const app = express();
 
@@ -20,10 +26,16 @@ mongoose
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then(() => console.log('MongoDB connected'))
+  .then(async () => {
+    process.env.NODE_ENV !== 'test' && (await seedDb());
+    console.log('MongoDB connected');
+  })
   .catch(err => console.log(err));
 mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
+
+app.use(cors());
+app.use(helmet());
 
 // Use Routes
 app.use('/api/v1', apiRouter);
