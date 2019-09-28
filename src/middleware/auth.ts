@@ -1,17 +1,45 @@
 // tslint:disable: import-name
 import jwt from 'jsonwebtoken';
-const { key } = require('../config/keys');
-
 import { Request, Response, NextFunction } from 'express';
-function auth(req: any, res: Response, next: NextFunction) {
-  const token = req.header('x-auth-token');
-  if (!token) return res.status(401).send('Permission unathorized');
+const { key } = require('../config/keys');
+import { User } from '../models/User';
+
+async function auth(req: any, res: Response, next: NextFunction) {
   try {
-    const decoded = jwt.verify(token, key);
-    req['checkUser'] = decoded;
-    next();
+    if (req.headers.authorization) {
+      const payload = req.headers.authorization.split(' ')[1];
+      if (!payload) {
+        return res.status(401).send(
+          { message: 'Unauthorized Access' },
+        );
+      }
+
+      const decoded: any = jwt.verify(payload, key);
+      const user = await User.findById(decoded._id);
+
+      if (user) {
+        // check session store
+        if (!req.session[user._id]) {
+          return res.status(401).send({
+            message: 'Session timed out. Please Login.'
+          },
+          );
+        }
+
+        if (payload !== req.session[user._id].token) {
+          return res.status(401).send(
+            { message: 'Invalid Token' },
+          );
+        }
+
+        req['checkUser'] = user;
+        next();
+      }
+    } else {
+      res.status(401).send({ message: 'User not found' });
+    }
   } catch (error) {
-    res.status(400).send('Invalid token.');
+    res.status(400).send({ data: { error } });
   }
 }
 
