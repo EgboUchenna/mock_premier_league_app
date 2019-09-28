@@ -63,7 +63,7 @@ function auth(req, res, next) {
                         // check session store
                         if (!req.session[user._id]) {
                             return [2 /*return*/, res.status(401).send({
-                                    message: 'Session timed out. Please Login.'
+                                    message: 'Session timed out. Please Login.',
                                 })];
                         }
                         if (payload !== req.session[user._id].token) {

@@ -21,7 +21,7 @@ async function auth(req: any, res: Response, next: NextFunction) {
         // check session store
         if (!req.session[user._id]) {
           return res.status(401).send({
-            message: 'Session timed out. Please Login.'
+            message: 'Session timed out. Please Login.',
           },
           );
         }
