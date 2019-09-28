@@ -14,6 +14,14 @@ export const login = async (req: Request, res: Response) => {
 
   // Send a token in the request header
   const token = checkUser.getAuthToken();
-  res.header('x-auth-token', token);
+
+  // save user session token on login
+  if (req.session) {
+    req.session[checkUser._id] = {
+      token,
+      data: { email, name: checkUser.name },
+    };
+  }
+
   return res.status(200).send({ message: `Welcome ${checkUser.name}` });
 };

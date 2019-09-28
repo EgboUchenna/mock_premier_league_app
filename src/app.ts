@@ -13,6 +13,7 @@ import cors from 'cors';
 
 const { key } = require('./config/keys');
 dotenv.config();
+
 const redisStore = connectRedis(session);
 const client = redis.createClient();
 

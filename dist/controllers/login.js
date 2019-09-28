@@ -59,7 +59,13 @@ exports.login = function (req, res) { return __awaiter(void 0, void 0, void 0, f
                     return [2 /*return*/, res.status(404).send({ message: 'Password is incorrect.' })];
                 }
                 token = checkUser.getAuthToken();
-                res.header('x-auth-token', token);
+                // save user session token on login
+                if (req.session) {
+                    req.session[checkUser._id] = {
+                        token: token,
+                        data: { email: email, name: checkUser.name },
+                    };
+                }
                 return [2 /*return*/, res.status(200).send({ message: "Welcome " + checkUser.name })];
         }
     });

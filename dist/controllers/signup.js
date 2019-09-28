@@ -72,6 +72,7 @@ exports.signup = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                 _c.sent();
                 data = { name: name_1, email: email };
                 token = user.getAuthToken();
+                // save user token to redis store
                 if (req.session) {
                     req.session[user._id] = { token: token, data: data };
                 }
