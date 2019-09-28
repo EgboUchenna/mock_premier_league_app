@@ -46,7 +46,7 @@ exports.viewFixtures = function (req, res) { return __awaiter(void 0, void 0, vo
             case 0: return [4 /*yield*/, Fixture_1.Fixture.find().populate('homeTeam awayTeam', 'name coach -_id')];
             case 1:
                 fixtures = _a.sent();
-                res.status(200).send(fixtures);
+                res.status(200).send({ message: fixtures });
                 return [2 /*return*/];
         }
     });
@@ -58,7 +58,7 @@ exports.viewPlayedMatches = function (req, res) { return __awaiter(void 0, void 
             case 0: return [4 /*yield*/, Fixture_1.Fixture.find({ played: true }).populate('homeTeam awayTeam', 'name coach -_id')];
             case 1:
                 playedMatches = _a.sent();
-                res.status(200).send(playedMatches);
+                res.status(200).send({ message: playedMatches });
                 return [2 /*return*/];
         }
     });
@@ -70,7 +70,7 @@ exports.viewPendingMatches = function (req, res) { return __awaiter(void 0, void
             case 0: return [4 /*yield*/, Fixture_1.Fixture.find({ played: false }).populate('homeTeam awayTeam', 'name coach -_id')];
             case 1:
                 pendingMatches = _a.sent();
-                res.status(200).send(pendingMatches);
+                res.status(200).send({ message: pendingMatches });
                 return [2 /*return*/];
         }
     });
@@ -88,12 +88,12 @@ exports.createFixtures = function (req, res) { return __awaiter(void 0, void 0, 
             case 1:
                 home = _b.sent();
                 if (!home)
-                    return [2 /*return*/, res.status(400).send("Home Team not found")];
+                    return [2 /*return*/, res.status(400).send({ message: "Home Team not found" })];
                 return [4 /*yield*/, Team_1.Team.findById(awayTeam).select({ name: 1, coach: 1 })];
             case 2:
                 away = _b.sent();
                 if (!away)
-                    return [2 /*return*/, res.status(400).send("Away Team not found")];
+                    return [2 /*return*/, res.status(400).send({ message: "Away Team not found" })];
                 _b.label = 3;
             case 3:
                 _b.trys.push([3, 5, , 6]);
@@ -109,7 +109,7 @@ exports.createFixtures = function (req, res) { return __awaiter(void 0, void 0, 
                 return [4 /*yield*/, fixture.save()];
             case 4:
                 _b.sent();
-                return [2 /*return*/, res.status(200).send(fixture)];
+                return [2 /*return*/, res.status(200).send({ message: fixture })];
             case 5:
                 error_1 = _b.sent();
                 return [2 /*return*/, res.status(400).send({ Error: error_1.message })];
@@ -117,29 +117,98 @@ exports.createFixtures = function (req, res) { return __awaiter(void 0, void 0, 
         }
     });
 }); };
-exports.getFixture = function (req, res) {
-    var id = req.query.id;
-    var fixture = Fixture_1.Fixture.findById({ id: id }).exec;
-    res.send(fixture);
-};
-exports.updateFixture = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var updateFixture_1, error_2;
+exports.getFixture = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var id, fixture;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, Fixture_1.Fixture.findByIdAndUpdate({ _id: req.params.id }, req.body)];
+                id = req.params.id;
+                return [4 /*yield*/, Fixture_1.Fixture.findOne({
+                        link: "http://localhost:" + process.env.PORT + "/api/v1/fixtures/" + id,
+                    })
+                        .populate('homeTeam awayTeam', 'name coach -_id')
+                        .select('-_id')];
             case 1:
-                updateFixture_1 = _a.sent();
-                if (updateFixture_1) {
-                    res.status(200).send("Fixture " + updateFixture_1._id + " was updated succesfully.");
+                fixture = _a.sent();
+                if (!fixture) {
+                    return [2 /*return*/, res.status(400).json({ message: 'Fixture does not exist' })];
                 }
-                return [3 /*break*/, 3];
+                res.status(200).json({ message: fixture });
+                return [2 /*return*/];
+        }
+    });
+}); };
+exports.updateFixture = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var error, _a, homeScore, awayScore, played, _b, homeTeam, awayTeam, time, stadium, _id, updateFixture_1, home, away, error_2;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
+            case 0:
+                error = fixture_1.validateUpdateFixture(req.body).error;
+                if (error)
+                    return [2 /*return*/, res.status(400).json(error.details[0].message)];
+                _a = req.body, homeScore = _a.homeScore, awayScore = _a.awayScore, played = _a.played;
+                _c.label = 1;
+            case 1:
+                _c.trys.push([1, 11, , 12]);
+                return [4 /*yield*/, Fixture_1.Fixture.findById({
+                        _id: req.params.id,
+                    })];
             case 2:
-                error_2 = _a.sent();
-                res.status(400).send(error_2);
-                return [3 /*break*/, 3];
-            case 3: return [2 /*return*/];
+                _b = _c.sent(), homeTeam = _b.homeTeam, awayTeam = _b.awayTeam, time = _b.time, stadium = _b.stadium, _id = _b._id;
+                return [4 /*yield*/, Fixture_1.Fixture.findByIdAndUpdate(_id, {
+                        homeTeam: homeTeam,
+                        awayTeam: awayTeam,
+                        time: time,
+                        stadium: stadium,
+                        homeScore: homeScore,
+                        awayScore: awayScore,
+                        played: played,
+                    })];
+            case 3:
+                updateFixture_1 = _c.sent();
+                if (!updateFixture_1) return [3 /*break*/, 10];
+                return [4 /*yield*/, updateFixture_1.save()];
+            case 4:
+                _c.sent();
+                return [4 /*yield*/, Team_1.Team.findById(homeTeam)];
+            case 5:
+                home = _c.sent();
+                return [4 /*yield*/, Team_1.Team.findById(awayTeam)];
+            case 6:
+                away = _c.sent();
+                if (!(played && home && away)) return [3 /*break*/, 9];
+                if (homeScore > awayScore) {
+                    home.wins += 1;
+                    away.losses += 1;
+                    home.goals += homeScore;
+                    away.goals += awayScore;
+                }
+                else if (homeScore < awayScore) {
+                    home.losses += 1;
+                    away.wins += 1;
+                    away.goals += awayScore;
+                    home.goals += homeScore;
+                }
+                else {
+                    away.goals += awayScore;
+                    home.goals += homeScore;
+                }
+                return [4 /*yield*/, home.save()];
+            case 7:
+                _c.sent();
+                return [4 /*yield*/, away.save()];
+            case 8:
+                _c.sent();
+                _c.label = 9;
+            case 9:
+                res.status(200).send({ message: "Fixture " + updateFixture_1._id + " was updated succesfully." });
+                _c.label = 10;
+            case 10: return [3 /*break*/, 12];
+            case 11:
+                error_2 = _c.sent();
+                res.status(400).send({ message: "Update failed" });
+                return [3 /*break*/, 12];
+            case 12: return [2 /*return*/];
         }
     });
 }); };
@@ -153,12 +222,12 @@ exports.deleteFixture = function (req, res) { return __awaiter(void 0, void 0, v
             case 1:
                 deleteFixture_1 = _a.sent();
                 if (deleteFixture_1) {
-                    res.status(200).send("Fixture " + deleteFixture_1._id + " was deleted succesfully.");
+                    res.status(200).send({ message: "Fixture " + deleteFixture_1._id + " was deleted succesfully." });
                 }
                 return [3 /*break*/, 3];
             case 2:
                 error_3 = _a.sent();
-                res.status(400).send("delete failed :()");
+                res.status(400).send({ message: "Deletion failed" });
                 return [3 /*break*/, 3];
             case 3: return [2 /*return*/];
         }
