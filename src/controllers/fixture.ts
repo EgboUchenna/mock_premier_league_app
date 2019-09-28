@@ -8,7 +8,7 @@ export const viewFixtures = async (req: Request, res: Response) => {
     'homeTeam awayTeam',
     'name coach -_id',
   );
-  res.status(200).send({ message: fixtures });
+  res.status(200).json({ message: fixtures });
 };
 
 export const viewPlayedMatches = async (req: Request, res: Response) => {
@@ -17,7 +17,7 @@ export const viewPlayedMatches = async (req: Request, res: Response) => {
     'name coach -_id',
   );
 
-  res.status(200).send({ message: playedMatches });
+  res.status(200).json({ message: playedMatches });
 };
 
 export const viewPendingMatches = async (req: Request, res: Response) => {
@@ -26,13 +26,13 @@ export const viewPendingMatches = async (req: Request, res: Response) => {
     'name coach -_id',
   );
 
-  res.status(200).send({ message: pendingMatches });
+  res.status(200).json({ message: pendingMatches });
 };
 
 export const createFixtures = async (req: Request, res: Response) => {
   const { error } = validateFixture(req.body);
 
-  if (error) return res.status(400).send(error.details[0].message);
+  if (error) return res.status(400).json(error.details[0].message);
 
   const {
     homeTeam,
@@ -45,10 +45,10 @@ export const createFixtures = async (req: Request, res: Response) => {
   } = req.body;
 
   const home = await Team.findById(homeTeam).select({ name: 1, coach: 1 });
-  if (!home) return res.status(400).send({ message: `Home Team not found` });
+  if (!home) return res.status(400).json({ message: `Home Team not found` });
 
   const away = await Team.findById(awayTeam).select({ name: 1, coach: 1 });
-  if (!away) return res.status(400).send({ message: `Away Team not found` });
+  if (!away) return res.status(400).json({ message: `Away Team not found` });
 
   try {
     const fixture = new Fixture({
@@ -62,9 +62,9 @@ export const createFixtures = async (req: Request, res: Response) => {
     });
 
     await fixture.save();
-    return res.status(200).send({ message: fixture });
+    return res.status(200).json({ message: fixture });
   } catch (error) {
-    return res.status(400).send({ Error: error.message });
+    return res.status(400).json({ Error: error.message });
   }
 };
 
@@ -89,6 +89,7 @@ export const updateFixture = async (req: Request, res: Response) => {
   const { homeScore, awayScore, played } = req.body;
 
   try {
+    // @ts-ignore
     const { homeTeam, awayTeam, time, stadium, _id } = await Fixture.findById({
       _id: req.params.id,
     });
@@ -129,10 +130,10 @@ export const updateFixture = async (req: Request, res: Response) => {
         await away.save();
       }
 
-      res.status(200).send({ message: `Fixture ${updateFixture._id} was updated succesfully.` });
+      res.status(200).json({ message: `Fixture ${updateFixture._id} was updated succesfully.` });
     }
   } catch (error) {
-    res.status(400).send({ message: `Update failed` });
+    res.status(400).json({ message: `Update failed` });
   }
 };
 

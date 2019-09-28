@@ -46,7 +46,7 @@ exports.viewFixtures = function (req, res) { return __awaiter(void 0, void 0, vo
             case 0: return [4 /*yield*/, Fixture_1.Fixture.find().populate('homeTeam awayTeam', 'name coach -_id')];
             case 1:
                 fixtures = _a.sent();
-                res.status(200).send({ message: fixtures });
+                res.status(200).json({ message: fixtures });
                 return [2 /*return*/];
         }
     });
@@ -58,7 +58,7 @@ exports.viewPlayedMatches = function (req, res) { return __awaiter(void 0, void 
             case 0: return [4 /*yield*/, Fixture_1.Fixture.find({ played: true }).populate('homeTeam awayTeam', 'name coach -_id')];
             case 1:
                 playedMatches = _a.sent();
-                res.status(200).send({ message: playedMatches });
+                res.status(200).json({ message: playedMatches });
                 return [2 /*return*/];
         }
     });
@@ -70,7 +70,7 @@ exports.viewPendingMatches = function (req, res) { return __awaiter(void 0, void
             case 0: return [4 /*yield*/, Fixture_1.Fixture.find({ played: false }).populate('homeTeam awayTeam', 'name coach -_id')];
             case 1:
                 pendingMatches = _a.sent();
-                res.status(200).send({ message: pendingMatches });
+                res.status(200).json({ message: pendingMatches });
                 return [2 /*return*/];
         }
     });
@@ -82,18 +82,18 @@ exports.createFixtures = function (req, res) { return __awaiter(void 0, void 0, 
             case 0:
                 error = fixture_1.validateFixture(req.body).error;
                 if (error)
-                    return [2 /*return*/, res.status(400).send(error.details[0].message)];
+                    return [2 /*return*/, res.status(400).json(error.details[0].message)];
                 _a = req.body, homeTeam = _a.homeTeam, awayTeam = _a.awayTeam, homeScore = _a.homeScore, awayScore = _a.awayScore, time = _a.time, stadium = _a.stadium, played = _a.played;
                 return [4 /*yield*/, Team_1.Team.findById(homeTeam).select({ name: 1, coach: 1 })];
             case 1:
                 home = _b.sent();
                 if (!home)
-                    return [2 /*return*/, res.status(400).send({ message: "Home Team not found" })];
+                    return [2 /*return*/, res.status(400).json({ message: "Home Team not found" })];
                 return [4 /*yield*/, Team_1.Team.findById(awayTeam).select({ name: 1, coach: 1 })];
             case 2:
                 away = _b.sent();
                 if (!away)
-                    return [2 /*return*/, res.status(400).send({ message: "Away Team not found" })];
+                    return [2 /*return*/, res.status(400).json({ message: "Away Team not found" })];
                 _b.label = 3;
             case 3:
                 _b.trys.push([3, 5, , 6]);
@@ -109,10 +109,10 @@ exports.createFixtures = function (req, res) { return __awaiter(void 0, void 0, 
                 return [4 /*yield*/, fixture.save()];
             case 4:
                 _b.sent();
-                return [2 /*return*/, res.status(200).send({ message: fixture })];
+                return [2 /*return*/, res.status(200).json({ message: fixture })];
             case 5:
                 error_1 = _b.sent();
-                return [2 /*return*/, res.status(400).send({ Error: error_1.message })];
+                return [2 /*return*/, res.status(400).json({ Error: error_1.message })];
             case 6: return [2 /*return*/];
         }
     });
@@ -201,12 +201,12 @@ exports.updateFixture = function (req, res) { return __awaiter(void 0, void 0, v
                 _c.sent();
                 _c.label = 9;
             case 9:
-                res.status(200).send({ message: "Fixture " + updateFixture_1._id + " was updated succesfully." });
+                res.status(200).json({ message: "Fixture " + updateFixture_1._id + " was updated succesfully." });
                 _c.label = 10;
             case 10: return [3 /*break*/, 12];
             case 11:
                 error_2 = _c.sent();
-                res.status(400).send({ message: "Update failed" });
+                res.status(400).json({ message: "Update failed" });
                 return [3 /*break*/, 12];
             case 12: return [2 /*return*/];
         }
