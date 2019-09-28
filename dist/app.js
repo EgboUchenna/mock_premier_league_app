@@ -61,9 +61,10 @@ app.use(body_parser_1.default.urlencoded({ extended: false }));
 app.use(body_parser_1.default.json());
 // DB CONFIG
 var db = require('./config/keys').mongoURI;
+var connectionUri = db ? db : process.env.TEST;
 // Connect to MongoDB
 mongoose_1.default
-    .connect(db, {
+    .connect(connectionUri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 })

@@ -25,10 +25,11 @@ app.use(bodyParser.json());
 
 // DB CONFIG
 const db = require('./config/keys').mongoURI;
+const connectionUri = db ? db : process.env.TEST;
 
 // Connect to MongoDB
 mongoose
-  .connect(db, {
+  .connect(connectionUri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
