@@ -5,7 +5,7 @@ module.exports = [
         nick_name: 'The Toffees',
         coach: 'Marco Silva',
         website: 'https://www.evertonfc.com',
-        founded: 1892,
+        founded: 1883,
         stadium_name: 'Goodison Park',
         wins: 3,
         losses: 7,

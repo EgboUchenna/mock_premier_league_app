@@ -11,11 +11,11 @@ export const searchTeam = async (req: Request, res: Response) => {
     if (+id) {
       const team = await Team.find({ founded: id });
       if (team.length > 0) {
-        return res.status(200).json({ data: { message: team } });
+        return res.status(200).json({ message: team });
       }
 
       if (!!team) {
-        return res.status(400).json(`Invalid Input`);
+        return res.status(400).json({ message: `Invalid Input` });
       }
     } else {
       value = new RegExp(id, 'gi');
@@ -27,11 +27,11 @@ export const searchTeam = async (req: Request, res: Response) => {
       ]);
 
       if (team.length > 0) {
-        return res.status(200).json({ data: { message: team } });
+        return res.status(200).json({ message: team });
       }
 
       if (!!team) {
-        return res.status(400).json({ data: { message: `Invalid Input` } });
+        return res.status(400).json({ message: `Invalid Input` });
       }
     }
   } catch (error) {
@@ -61,11 +61,11 @@ export const searchFixture = async (req: Request, res: Response) => {
       }
     });
     if (getFixtures.length > 0) {
-      return res.status(200).json({ data: { message: getFixtures } });
+      return res.status(200).json({ message: getFixtures });
     }
 
     if (!!getFixtures) {
-      return res.status(400).json({ data: { message: `Invalid Input` } });
+      return res.status(400).json({ message: `Invalid Input` });
     }
   } catch (error) {
     return res.status(400).json({ error });

@@ -52,10 +52,10 @@ exports.searchTeam = function (req, res) { return __awaiter(void 0, void 0, void
             case 2:
                 team = _a.sent();
                 if (team.length > 0) {
-                    return [2 /*return*/, res.status(200).json({ data: { message: team } })];
+                    return [2 /*return*/, res.status(200).json({ message: team })];
                 }
                 if (!!team) {
-                    return [2 /*return*/, res.status(400).json("Invalid Input")];
+                    return [2 /*return*/, res.status(400).json({ message: "Invalid Input" })];
                 }
                 return [3 /*break*/, 5];
             case 3:
@@ -68,10 +68,10 @@ exports.searchTeam = function (req, res) { return __awaiter(void 0, void 0, void
             case 4:
                 team = _a.sent();
                 if (team.length > 0) {
-                    return [2 /*return*/, res.status(200).json({ data: { message: team } })];
+                    return [2 /*return*/, res.status(200).json({ message: team })];
                 }
                 if (!!team) {
-                    return [2 /*return*/, res.status(400).json({ data: { message: "Invalid Input" } })];
+                    return [2 /*return*/, res.status(400).json({ message: "Invalid Input" })];
                 }
                 _a.label = 5;
             case 5: return [3 /*break*/, 7];
@@ -105,10 +105,10 @@ exports.searchFixture = function (req, res) { return __awaiter(void 0, void 0, v
                     }
                 });
                 if (getFixtures.length > 0) {
-                    return [2 /*return*/, res.status(200).json({ data: { message: getFixtures } })];
+                    return [2 /*return*/, res.status(200).json({ message: getFixtures })];
                 }
                 if (!!getFixtures) {
-                    return [2 /*return*/, res.status(400).json({ data: { message: "Invalid Input" } })];
+                    return [2 /*return*/, res.status(400).json({ message: "Invalid Input" })];
                 }
                 return [3 /*break*/, 4];
             case 3:
