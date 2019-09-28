@@ -66,7 +66,10 @@ exports.login = function (req, res) { return __awaiter(void 0, void 0, void 0, f
                         data: { email: email, name: checkUser.name },
                     };
                 }
-                return [2 /*return*/, res.status(200).send({ message: "Welcome " + checkUser.name })];
+                return [2 /*return*/, res.status(200).send({
+                        token: token,
+                        message: "Welcome " + checkUser.name,
+                    })];
         }
     });
 }); };

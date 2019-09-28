@@ -76,7 +76,7 @@ exports.signup = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                 if (req.session) {
                     req.session[user._id] = { token: token, data: data };
                 }
-                res.header('x-auth-token', token).send({
+                res.send({
                     data: data,
                     token: token,
                     output: 'Sign up successful.',

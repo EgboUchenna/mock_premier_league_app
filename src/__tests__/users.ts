@@ -40,21 +40,8 @@ afterAll(async () => {
 });
 
 describe('User SignUp Routes', () => {
-  it('user should sign up', () => {
-    return request(app)
-      .post('/api/v1/users/signup')
-      .send({
-        name: 'Egbo Uchenna',
-        email: 'uchee@gmail.com',
-        password: 'pass123456',
-      })
-      .expect(res => {
-        expect(Object.keys(res.body.data)).toContain('name');
-        expect(Object.keys(res.body.data)).toContain('email');
-      });
-  });
 
-  it('user should sign up', () => {
+  it('A user can sign up', () => {
     return request(app)
       .post('/api/v1/users/signup')
       .send({
@@ -68,6 +55,19 @@ describe('User SignUp Routes', () => {
       });
   });
 
+  it('Should display sign up success', () => {
+    return request(app)
+      .post('/api/v1/users/signup')
+      .send({
+        name: 'Egbo Uchenna',
+        email: 'uchenna@gmail.com',
+        password: 'pass123456',
+      })
+      .expect(res => {
+        expect(res.body.output).toBe('Sign up successful.');
+      });
+  });
+
   it('should warn if same user sign up again', () => {
     return request(app)
       .post('/api/v1/users/signup')
@@ -78,6 +78,57 @@ describe('User SignUp Routes', () => {
       })
       .expect(res => {
         expect(res.body.message).toBe(`Email already exists.`);
+      });
+  });
+});
+
+describe('User Login Routes', () => {
+  it('A registered user can login', () => {
+    return request(app)
+      .post('/api/v1/users/login')
+      .send({
+        email: 'uchee@gmail.com',
+        password: 'pass12345',
+      })
+      .expect(res => {
+        expect(res.body.message).toBe(`Welcome Uchenna Matt`);
+      });
+  });
+
+  it('A non registered user cannot login', () => {
+    return request(app)
+      .post('/api/v1/users/login')
+      .send({
+        email: 'bash@gmail.com',
+        password: 'pass123456',
+      })
+      .expect(res => {
+        expect(res.body.message).toBe(`Email does not exist.`);
+      });
+  });
+
+  it('Admin can login', () => {
+    return request(app)
+      .post('/api/v1/users/login')
+      .send({
+        email: 'bash@example.com',
+        password: 'pass12345',
+      })
+      .expect(res => {
+        adminToken = res.body.token;
+        expect(res.body.message).toBe(`Welcome Bash Phil`);
+      });
+  });
+
+  it('Passwords should match', () => {
+    return request(app)
+      .post('/api/v1/users/login')
+      .send({
+        email: 'sewa@example.com',
+        password: 'pass2',
+      })
+      .expect(res => {
+        expect(res.body.message).toBe(`Password is incorrect.`);
       });
   });
 });

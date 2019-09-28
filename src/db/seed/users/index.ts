@@ -1,7 +1,7 @@
 export =[
   {
-    email: 'Uche@example.com',
-    name: 'Uche Matt',
+    email: 'uchee@gmail.com',
+    name: 'Uchenna Matt',
     password: 'pass12345',
     isAdmin: true,
   },

@@ -23,5 +23,8 @@ export const login = async (req: Request, res: Response) => {
     };
   }
 
-  return res.status(200).send({ message: `Welcome ${checkUser.name}` });
+  return res.status(200).send({
+    token,
+    message: `Welcome ${checkUser.name}`,
+  });
 };

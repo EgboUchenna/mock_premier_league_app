@@ -95,20 +95,7 @@ afterAll(function () { return __awaiter(void 0, void 0, void 0, function () {
     });
 }); });
 describe('User SignUp Routes', function () {
-    it('user should sign up', function () {
-        return supertest_1.default(app_1.default)
-            .post('/api/v1/users/signup')
-            .send({
-            name: 'Egbo Uchenna',
-            email: 'uchee@gmail.com',
-            password: 'pass123456',
-        })
-            .expect(function (res) {
-            expect(Object.keys(res.body.data)).toContain('name');
-            expect(Object.keys(res.body.data)).toContain('email');
-        });
-    });
-    it('user should sign up', function () {
+    it('A user can sign up', function () {
         return supertest_1.default(app_1.default)
             .post('/api/v1/users/signup')
             .send({
@@ -121,6 +108,18 @@ describe('User SignUp Routes', function () {
             expect(Object.keys(res.body.data)).toContain('email');
         });
     });
+    it('Should display sign up success', function () {
+        return supertest_1.default(app_1.default)
+            .post('/api/v1/users/signup')
+            .send({
+            name: 'Egbo Uchenna',
+            email: 'uchenna@gmail.com',
+            password: 'pass123456',
+        })
+            .expect(function (res) {
+            expect(res.body.output).toBe('Sign up successful.');
+        });
+    });
     it('should warn if same user sign up again', function () {
         return supertest_1.default(app_1.default)
             .post('/api/v1/users/signup')
@@ -131,6 +130,53 @@ describe('User SignUp Routes', function () {
         })
             .expect(function (res) {
             expect(res.body.message).toBe("Email already exists.");
+        });
+    });
+});
+describe('User Login Routes', function () {
+    it('A registered user can login', function () {
+        return supertest_1.default(app_1.default)
+            .post('/api/v1/users/login')
+            .send({
+            email: 'uchee@gmail.com',
+            password: 'pass12345',
+        })
+            .expect(function (res) {
+            expect(res.body.message).toBe("Welcome Uchenna Matt");
+        });
+    });
+    it('A non registered user cannot login', function () {
+        return supertest_1.default(app_1.default)
+            .post('/api/v1/users/login')
+            .send({
+            email: 'bash@gmail.com',
+            password: 'pass123456',
+        })
+            .expect(function (res) {
+            expect(res.body.message).toBe("Email does not exist.");
+        });
+    });
+    it('Admin can login', function () {
+        return supertest_1.default(app_1.default)
+            .post('/api/v1/users/login')
+            .send({
+            email: 'bash@example.com',
+            password: 'pass12345',
+        })
+            .expect(function (res) {
+            adminToken = res.body.token;
+            expect(res.body.message).toBe("Welcome Bash Phil");
+        });
+    });
+    it('Passwords should match', function () {
+        return supertest_1.default(app_1.default)
+            .post('/api/v1/users/login')
+            .send({
+            email: 'sewa@example.com',
+            password: 'pass2',
+        })
+            .expect(function (res) {
+            expect(res.body.message).toBe("Password is incorrect.");
         });
     });
 });
