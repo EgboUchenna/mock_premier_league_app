@@ -6,7 +6,7 @@
   "scripts": {
     "start": "tsc -w",
     "dev": "nodemon dist/app.js",
-    "test": "jest"
+    "test": "jest --watch"
   },
   "repository": {
     "type": "git",
