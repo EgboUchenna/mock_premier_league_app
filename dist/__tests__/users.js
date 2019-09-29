@@ -335,4 +335,89 @@ describe('Fixtures Routes', function () {
         });
     });
 });
+describe('Teams Routes', function () {
+    it('Users should view teams', function () {
+        return supertest_1.default(app_1.default)
+            .get("/api/v1/teams")
+            .set('Authorization', "Bearer " + token)
+            .expect(function (res) {
+            expect(res.body.message[0]).toHaveProperty('name');
+            expect(res.body.message[0]).toHaveProperty('founded');
+            expect(res.body.message[0]).toHaveProperty('website');
+            expect(res.body.message[0]).toHaveProperty('nick_name');
+        });
+    });
+    it('Admin should create teams', function () { return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            return [2 /*return*/, supertest_1.default(app_1.default)
+                    .post("/api/v1/teams")
+                    .set('Authorization', "Bearer " + adminToken).send({
+                    name: 'Leeds United',
+                    nick_name: 'The Bulls',
+                    website: 'https://leedsunited.com',
+                    coach: 'Marcelo Bielsa',
+                    founded: 1908,
+                    stadium_name: 'Barlos Road',
+                    stadium_capacity: '43,000',
+                }).expect(function (res) {
+                    expect(res.body.data.message).toBe("Team Leeds United A.K.A \"The Bulls\" created successfully.");
+                })];
+        });
+    }); });
+    it('User should not create teams', function () {
+        return supertest_1.default(app_1.default)
+            .post("/api/v1/teams")
+            .set('Authorization', "Bearer " + token)
+            .send({
+            name: 'Swansea',
+            nick_name: 'The Swans',
+            website: 'https://swanseafc.com',
+            coach: 'Richard Greene',
+            founded: 1970,
+            stadium_name: 'Liberty Stadium',
+            stadium_capacity: '45,050',
+        })
+            .expect(function (res) {
+            expect(res.body.message).toBe("Unauthorized access.");
+        });
+    });
+    it('Admin should update teams', function () {
+        return supertest_1.default(app_1.default)
+            .put("/api/v1/teams/" + teamA._id)
+            .set('Authorization', "Bearer " + adminToken)
+            .send({
+            coach: 'Jurgen Klopp',
+            nick_name: 'The Reds',
+            founded: 1892,
+            stadium_name: 'Anfield',
+            stadium_capacity: '60,234',
+        })
+            .expect(function (res) {
+            expect(res.body.message).toBe("Team Liverpool has been updated successfully.");
+        });
+    });
+    it('Users should not update teams', function () {
+        return supertest_1.default(app_1.default)
+            .put("/api/v1/teams/" + teamA._id)
+            .set('Authorization', "Bearer " + token)
+            .send({
+            coach: 'Willams James',
+            website: 'https://brightonfc.com',
+            founded: 1877,
+            stadium_name: 'Seagulls',
+            stadium_capacity: '30,033',
+        })
+            .expect(function (res) {
+            expect(res.body.message).toBe("Unauthorized access.");
+        });
+    });
+    it('Admin should remove team', function () {
+        return supertest_1.default(app_1.default)
+            .delete("/api/v1/teams/" + teamA._id)
+            .set('Authorization', "Bearer " + adminToken)
+            .expect(function (res) {
+            expect(res.body.message).toBe("Team Liverpool has been deleted successfully.");
+        });
+    });
+});
 //# sourceMappingURL=users.js.map
