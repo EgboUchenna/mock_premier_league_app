@@ -130,7 +130,7 @@ export const updateFixture = async (req: Request, res: Response) => {
         await away.save();
       }
 
-      res.status(200).json({ message: `Fixture ${updateFixture._id} was updated succesfully.` });
+      res.status(200).json({ message: `Fixture ${updateFixture._id} was updated successfully.` });
     }
   } catch (error) {
     res.status(400).json({ message: `Update failed` });
@@ -141,7 +141,7 @@ export const deleteFixture = async (req: Request, res: Response) => {
   try {
     const deleteFixture = await Fixture.findByIdAndDelete({ _id: req.params.id });
     if (deleteFixture) {
-      res.status(200).send({ message: `Fixture ${deleteFixture._id} was deleted succesfully.` });
+      res.status(200).send({ message: `Fixture ${deleteFixture._id} was deleted successfully.` });
     }
   } catch (error) {
     res.status(400).send({ message: `Deletion failed` });

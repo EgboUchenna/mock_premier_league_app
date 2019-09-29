@@ -201,7 +201,7 @@ exports.updateFixture = function (req, res) { return __awaiter(void 0, void 0, v
                 _c.sent();
                 _c.label = 9;
             case 9:
-                res.status(200).json({ message: "Fixture " + updateFixture_1._id + " was updated succesfully." });
+                res.status(200).json({ message: "Fixture " + updateFixture_1._id + " was updated successfully." });
                 _c.label = 10;
             case 10: return [3 /*break*/, 12];
             case 11:
@@ -222,7 +222,7 @@ exports.deleteFixture = function (req, res) { return __awaiter(void 0, void 0, v
             case 1:
                 deleteFixture_1 = _a.sent();
                 if (deleteFixture_1) {
-                    res.status(200).send({ message: "Fixture " + deleteFixture_1._id + " was deleted succesfully." });
+                    res.status(200).send({ message: "Fixture " + deleteFixture_1._id + " was deleted successfully." });
                 }
                 return [3 /*break*/, 3];
             case 2:
