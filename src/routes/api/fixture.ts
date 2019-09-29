@@ -18,7 +18,7 @@ router
   .get('/', auth, viewFixtures)
   .get('/played', viewPlayedMatches)
   .get('/pending', viewPendingMatches)
-  .get('/one', getFixture)
+  .get('/:id', getFixture)
   .post('/', [auth, admin], createFixtures)
   .put('/:id', [auth, admin], updateFixture)
   .delete('/:id', [auth, admin], deleteFixture);

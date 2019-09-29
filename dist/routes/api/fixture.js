@@ -12,7 +12,7 @@ router
     .get('/', auth_1.default, fixture_1.viewFixtures)
     .get('/played', fixture_1.viewPlayedMatches)
     .get('/pending', fixture_1.viewPendingMatches)
-    .get('/one', fixture_1.getFixture)
+    .get('/:id', fixture_1.getFixture)
     .post('/', [auth_1.default, admin_1.default], fixture_1.createFixtures)
     .put('/:id', [auth_1.default, admin_1.default], fixture_1.updateFixture)
     .delete('/:id', [auth_1.default, admin_1.default], fixture_1.deleteFixture);
