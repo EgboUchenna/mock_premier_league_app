@@ -15,8 +15,9 @@ exports.validateTeam = function (input) {
             .min(3)
             .max(255)
             .required(),
-        coach: joi_1.default.string()
-            .email()
+        coach: joi_1.default.string().
+            min(3).
+            max(50)
             .required(),
         website: joi_1.default.string()
             .min(3)
@@ -31,6 +32,9 @@ exports.validateTeam = function (input) {
             .max(255)
             .required(),
         founded: joi_1.default.number().required(),
+        wins: joi_1.default.number().optional(),
+        losses: joi_1.default.number().optional(),
+        goals: joi_1.default.number().optional(),
     };
     return joi_1.default.validate(input, schema);
 };
