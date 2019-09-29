@@ -46,7 +46,10 @@ var mongoose_1 = __importDefault(require("mongoose"));
 var app_1 = __importDefault(require("../app"));
 var User_1 = require("../models/User");
 var Team_1 = require("../models/Team");
+var auth_1 = __importDefault(require("../middleware/auth"));
+var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var db_1 = __importDefault(require("../db"));
+var key = require('../config/keys').key;
 var token;
 var adminToken;
 var teamA;
@@ -70,7 +73,7 @@ beforeAll(function () { return __awaiter(void 0, void 0, void 0, function () {
                     })];
             case 2:
                 user = _a.sent();
-                token = user.body.data.token;
+                token = user.body.token;
                 return [4 /*yield*/, db_1.default()];
             case 3:
                 _a.sent();
@@ -180,13 +183,54 @@ describe('User Login Routes', function () {
         });
     });
 });
+// mocking the auth middleware
+jest.mock('../middleware/auth');
+var mockedAuth = auth_1.default;
+mockedAuth.mockImplementation(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var payload, decoded;
+    return __generator(this, function (_a) {
+        // mock req.session
+        // session store
+        session = {};
+        try {
+            payload = req.headers.authorization.split(' ')[1];
+            if (!payload) {
+                return [2 /*return*/, res.status(401).send({ message: 'Access denied no token provided' })];
+            }
+            decoded = jsonwebtoken_1.default.verify(payload, key);
+            // say the user has already logged in / sign up
+            // @ts-ignore
+            session[decoded._id] = { token: payload };
+            if (decoded) {
+                // check the session store
+                // @ts-ignore
+                if (!session[decoded._id]) {
+                    return [2 /*return*/, res.status(401).send({ message: 'Session over, Pls login...' })];
+                }
+                // @ts-ignore
+                if (payload !== session[decoded._id].token) {
+                    return [2 /*return*/, res.status(401).send({ message: 'Invalid Token' })];
+                }
+                req['checkUser'] = decoded;
+                next();
+            }
+            else {
+                res.status(401).send({ message: 'user does not exist' });
+            }
+        }
+        catch (error) {
+            res.status(400).send({ data: { error: error } });
+        }
+        return [2 /*return*/];
+    });
+}); });
 describe('Fixtures Routes', function () {
     it('Authenticated users should see fixtures', function () {
         return supertest_1.default(app_1.default)
             .get('/api/v1/fixtures')
             .set('Authorization', "Bearer " + token)
             .expect(function (res) {
-            expect(res.body.message).toHaveLength(10);
+            expect(res.body.message).toHaveLength(5);
         });
     });
     it('Unauthorized users should not see fixtures', function () {
@@ -195,7 +239,7 @@ describe('Fixtures Routes', function () {
             .expect('Content-Type', /json/)
             .set('Authorization', "abcd")
             .expect(function (res) {
-            expect(res.body.message).toBe('access denied no token provided');
+            expect(res.body.message).toBe('Access denied no token provided');
         });
     });
     it('Unauthenticated users should not see fixtures', function () {
@@ -203,12 +247,12 @@ describe('Fixtures Routes', function () {
             .get('/api/v1/fixtures')
             .set('Authorization', "Bearer " + 'gibberish')
             .expect(function (res) {
-            expect(res.body.error.message).toBe('jwt malformed');
+            expect(res.body.data.error.message).toBe('jwt malformed');
         });
     });
     it('Users should see completed fixtures', function () {
         return supertest_1.default(app_1.default)
-            .get('/api/v1/fixtures/complete')
+            .get('/api/v1/fixtures/played')
             .set('Authorization', "Bearer " + token)
             .expect(function (res) {
             expect(res.body.message[0]).toHaveProperty('homeScore');
@@ -222,7 +266,7 @@ describe('Fixtures Routes', function () {
     });
     it('Users should see pending fixtures', function () {
         return supertest_1.default(app_1.default)
-            .get('/api/v1/fixtures/pend')
+            .get('/api/v1/fixtures/pending')
             .set('Authorization', "Bearer " + token)
             .expect(200);
     });
@@ -236,34 +280,34 @@ describe('Fixtures Routes', function () {
             time: '7:00pm',
             homeScore: 0,
             awayScore: 0,
-            stadium: 'boltonfield',
+            stadium: 'Anfield',
             played: false,
         })
             .expect(function (res) {
-            // assign fixtures properties
+            // add fixtures properties
             fixturesId = res.body.message._id;
             fixtureLink = res.body.message.link;
             expect(res.body.message).toMatchObject({
                 homeScore: 0,
                 awayScore: 0,
-                stadium: 'boltonfield',
+                stadium: 'Anfield',
                 played: false,
             });
         });
     });
     it('Users should see a fixtures by link', function () {
         var link = fixtureLink.split('/');
-        var mainLink = link[link.length - 1];
+        var linkID = link[link.length - 1];
         return supertest_1.default(app_1.default)
-            .get("/api/v1/fixtures/" + mainLink)
+            .get("/api/v1/fixtures/" + linkID)
             .set('Authorization', "Bearer " + token)
             .expect(function (res) {
             expect(res.body.message).toMatchObject({
                 homeScore: 0,
                 awayScore: 0,
-                stadium: 'boltonfield',
-                homeTeam: { name: 'Brimingham City', coach: 'ochuko' },
-                awayTeam: { name: 'Fulham', coach: 'Van gwart' },
+                stadium: 'Anfield',
+                homeTeam: { name: 'Liverpool', coach: 'Jurgen Klopp' },
+                awayTeam: { name: 'Manchester City', coach: 'Pep Guardiola' },
                 time: '7:00pm',
                 played: false,
             });
@@ -279,7 +323,7 @@ describe('Fixtures Routes', function () {
             played: true,
         })
             .expect(function (res) {
-            expect(res.body.message).toBe("Fixture " + fixturesId + " updated successfully");
+            expect(res.body.message).toBe("Fixture " + fixturesId + " was updated successfully.");
         });
     });
     it('Admin should delete fixtures', function () {
@@ -287,7 +331,7 @@ describe('Fixtures Routes', function () {
             .delete("/api/v1/fixtures/" + fixturesId)
             .set('Authorization', "Bearer " + adminToken)
             .expect(function (res) {
-            expect(res.body.message).toBe("Fixture " + fixturesId + " deleted successfully");
+            expect(res.body.message).toBe("Fixture " + fixturesId + " was deleted successfully.");
         });
     });
 });

@@ -9,6 +9,7 @@ import auth from '../middleware/auth';
 import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 import seed from '../db';
+const { key } = require('../config/keys');
 
 let token: string;
 let adminToken: string;
@@ -28,7 +29,7 @@ beforeAll(async () => {
       email: 'uche@gmail.com',
       password: 'pass123456',
     });
-  token = user.body.data.token;
+  token = user.body.token;
   await seed();
 
   teamA = await Team.findOne({ name: 'Liverpool' });
@@ -133,13 +134,59 @@ describe('User Login Routes', () => {
   });
 });
 
+// mocking the auth middleware
+jest.mock('../middleware/auth');
+const mockedAuth = auth as jest.Mocked<any>;
+mockedAuth.mockImplementation(
+  async (req: any, res: Response, next: NextFunction) => {
+    // mock req.session
+
+    // session store
+    session = {};
+    try {
+      const payload = req.headers.authorization.split(' ')[1];
+      if (!payload) {
+        return res.status(401).send({ message: 'Access denied no token provided' },
+        );
+      }
+      // @ts-ignore
+      const decoded: any = jwt.verify(payload, key);
+
+      // say the user has already logged in / sign up
+      // @ts-ignore
+      session[decoded._id] = { token: payload };
+
+      if (decoded) {
+        // check the session store
+        // @ts-ignore
+        if (!session[decoded._id]) {
+          return res.status(401).send({ message: 'Session over, Pls login...' },
+          );
+        }
+        // @ts-ignore
+        if (payload !== session[decoded._id].token) {
+          return res.status(401).send({ message: 'Invalid Token' },
+          );
+        }
+        req['checkUser'] = decoded;
+        next();
+
+      } else {
+        res.status(401).send({ message: 'user does not exist' });
+      }
+    } catch (error) {
+      res.status(400).send({ data: { error } });
+    }
+  },
+);
+
 describe('Fixtures Routes', () => {
   it('Authenticated users should see fixtures', () => {
     return request(app)
       .get('/api/v1/fixtures')
       .set('Authorization', `Bearer ${token}`)
       .expect(res => {
-        expect(res.body.message).toHaveLength(10);
+        expect(res.body.message).toHaveLength(5);
       });
   });
 
@@ -149,7 +196,7 @@ describe('Fixtures Routes', () => {
       .expect('Content-Type', /json/)
       .set('Authorization', `abcd`)
       .expect(res => {
-        expect(res.body.message).toBe('access denied no token provided');
+        expect(res.body.message).toBe('Access denied no token provided');
       });
   });
 
@@ -158,13 +205,13 @@ describe('Fixtures Routes', () => {
       .get('/api/v1/fixtures')
       .set('Authorization', `Bearer ${'gibberish'}`)
       .expect(res => {
-        expect(res.body.error.message).toBe('jwt malformed');
+        expect(res.body.data.error.message).toBe('jwt malformed');
       });
   });
 
   it('Users should see completed fixtures', () => {
     return request(app)
-      .get('/api/v1/fixtures/complete')
+      .get('/api/v1/fixtures/played')
       .set('Authorization', `Bearer ${token}`)
       .expect(res => {
         expect(res.body.message[0]).toHaveProperty('homeScore');
@@ -176,12 +223,14 @@ describe('Fixtures Routes', () => {
         expect(res.body.message[0]).toHaveProperty('stadium');
       });
   });
+
   it('Users should see pending fixtures', () => {
     return request(app)
-      .get('/api/v1/fixtures/pend')
+      .get('/api/v1/fixtures/pending')
       .set('Authorization', `Bearer ${token}`)
       .expect(200);
   });
+
   it('Admin should create fixtures', () => {
     return request(app)
       .post('/api/v1/fixtures')
@@ -192,18 +241,17 @@ describe('Fixtures Routes', () => {
         time: '7:00pm',
         homeScore: 0,
         awayScore: 0,
-        stadium: 'boltonfield',
+        stadium: 'Anfield',
         played: false,
       })
       .expect(res => {
-        // assign fixtures properties
+        // add fixtures properties
         fixturesId = res.body.message._id;
         fixtureLink = res.body.message.link;
-
         expect(res.body.message).toMatchObject({
           homeScore: 0,
           awayScore: 0,
-          stadium: 'boltonfield',
+          stadium: 'Anfield',
           played: false,
         });
       });
@@ -211,17 +259,17 @@ describe('Fixtures Routes', () => {
 
   it('Users should see a fixtures by link', () => {
     const link = fixtureLink.split('/');
-    const mainLink = link[link.length - 1];
+    const linkID = link[link.length - 1];
     return request(app)
-      .get(`/api/v1/fixtures/${mainLink}`)
+      .get(`/api/v1/fixtures/${linkID}`)
       .set('Authorization', `Bearer ${token}`)
       .expect(res => {
         expect(res.body.message).toMatchObject({
           homeScore: 0,
           awayScore: 0,
-          stadium: 'boltonfield',
-          homeTeam: { name: 'Brimingham City', coach: 'ochuko' },
-          awayTeam: { name: 'Fulham', coach: 'Van gwart' },
+          stadium: 'Anfield',
+          homeTeam: { name: 'Liverpool', coach: 'Jurgen Klopp' },
+          awayTeam: { name: 'Manchester City', coach: 'Pep Guardiola' },
           time: '7:00pm',
           played: false,
         });
@@ -239,7 +287,7 @@ describe('Fixtures Routes', () => {
       })
       .expect(res => {
         expect(res.body.message).toBe(
-          `Fixture ${fixturesId} updated successfully`,
+          `Fixture ${fixturesId} was updated successfully.`,
         );
       });
   });
@@ -250,7 +298,7 @@ describe('Fixtures Routes', () => {
       .set('Authorization', `Bearer ${adminToken}`)
       .expect(res => {
         expect(res.body.message).toBe(
-          `Fixture ${fixturesId} deleted successfully`,
+          `Fixture ${fixturesId} was deleted successfully.`,
         );
       });
   });
