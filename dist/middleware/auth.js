@@ -69,9 +69,9 @@ function auth(req, res, next) {
                         if (payload !== req.session[user._id].token) {
                             return [2 /*return*/, res.status(401).send({ message: 'Invalid Token' })];
                         }
-                        req['checkUser'] = user;
-                        next();
                     }
+                    req['checkUser'] = user;
+                    next();
                     return [3 /*break*/, 3];
                 case 2:
                     res.status(401).send({ message: 'User not found' });
@@ -79,7 +79,7 @@ function auth(req, res, next) {
                 case 3: return [3 /*break*/, 5];
                 case 4:
                     error_1 = _a.sent();
-                    res.status(400).send({ data: { error: error_1 } });
+                    res.status(400).send({ error: error_1 });
                     return [3 /*break*/, 5];
                 case 5: return [2 /*return*/];
             }

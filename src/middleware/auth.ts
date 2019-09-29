@@ -31,15 +31,16 @@ async function auth(req: any, res: Response, next: NextFunction) {
             { message: 'Invalid Token' },
           );
         }
-
-        req['checkUser'] = user;
-        next();
       }
+
+      req['checkUser'] = user;
+      next();
+
     } else {
       res.status(401).send({ message: 'User not found' });
     }
   } catch (error) {
-    res.status(400).send({ data: { error } });
+    res.status(400).send({ error });
   }
 }
 
