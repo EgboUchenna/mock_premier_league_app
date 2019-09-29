@@ -47,7 +47,7 @@ exports.viewTeams = function (req, res) { return __awaiter(void 0, void 0, void 
                 return [4 /*yield*/, Team_1.Team.find().sort({ name: 1 })];
             case 1:
                 teams = _a.sent();
-                res.send(teams);
+                res.send({ message: teams });
                 return [3 /*break*/, 3];
             case 2:
                 error_1 = _a.sent();
@@ -58,22 +58,25 @@ exports.viewTeams = function (req, res) { return __awaiter(void 0, void 0, void 
     });
 }); };
 exports.createTeam = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var error, _a, name, nick_name, website, coach, founded, stadium_name, stadium_capacity, checkTeam, newTeam;
+    var error, _a, name_1, nick_name, website, coach, founded, stadium_name, stadium_capacity, checkTeam, newTeam, error_2;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
                 error = team_1.validateTeam(req.body).error;
                 if (error)
                     return [2 /*return*/, res.status(400).send(error.details[0].message)];
-                _a = req.body, name = _a.name, nick_name = _a.nick_name, website = _a.website, coach = _a.coach, founded = _a.founded, stadium_name = _a.stadium_name, stadium_capacity = _a.stadium_capacity;
-                return [4 /*yield*/, Team_1.Team.findOne({ nick_name: nick_name })];
+                _b.label = 1;
             case 1:
+                _b.trys.push([1, 4, , 5]);
+                _a = req.body, name_1 = _a.name, nick_name = _a.nick_name, website = _a.website, coach = _a.coach, founded = _a.founded, stadium_name = _a.stadium_name, stadium_capacity = _a.stadium_capacity;
+                return [4 /*yield*/, Team_1.Team.findOne({ nick_name: nick_name })];
+            case 2:
                 checkTeam = _b.sent();
                 if (checkTeam) {
-                    return [2 /*return*/, res.status(404).send({ message: "Nick name already in use" })];
+                    return [2 /*return*/, res.status(404).send({ data: { message: "Nick name already taken." } })];
                 }
                 newTeam = new Team_1.Team({
-                    name: name,
+                    name: name_1,
                     nick_name: nick_name,
                     website: website,
                     coach: coach,
@@ -82,15 +85,22 @@ exports.createTeam = function (req, res) { return __awaiter(void 0, void 0, void
                     stadium_capacity: stadium_capacity,
                 });
                 return [4 /*yield*/, newTeam.save()];
-            case 2:
+            case 3:
                 _b.sent();
-                res.send({ message: "Team " + name + " created succesfully, A.K.A " + nick_name });
-                return [2 /*return*/];
+                res.status(200).json({
+                    data: { message: "Team " + name_1 + " A.K.A \"" + nick_name + "\" created successfully." },
+                });
+                return [3 /*break*/, 5];
+            case 4:
+                error_2 = _b.sent();
+                res.status(400).json({ data: { message: error_2.message } });
+                return [3 /*break*/, 5];
+            case 5: return [2 /*return*/];
         }
     });
 }); };
 exports.updateTeam = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var updateTeam_1, error_2;
+    var updateTeam_1, error_3;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -99,19 +109,19 @@ exports.updateTeam = function (req, res) { return __awaiter(void 0, void 0, void
             case 1:
                 updateTeam_1 = _a.sent();
                 if (updateTeam_1) {
-                    res.status(200).send("Team " + updateTeam_1.name + " has been updated succesfully.");
+                    res.status(200).send({ message: "Team " + updateTeam_1.name + " has been updated successfully." });
                 }
                 return [3 /*break*/, 3];
             case 2:
-                error_2 = _a.sent();
-                res.status(400).send(error_2.message);
+                error_3 = _a.sent();
+                res.status(400).send(error_3.message);
                 return [3 /*break*/, 3];
             case 3: return [2 /*return*/];
         }
     });
 }); };
 exports.deleteTeam = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var deleteTeam_1, error_3;
+    var deleteTeam_1, error_4;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -120,12 +130,12 @@ exports.deleteTeam = function (req, res) { return __awaiter(void 0, void 0, void
             case 1:
                 deleteTeam_1 = _a.sent();
                 if (deleteTeam_1) {
-                    res.status(200).send("Team " + deleteTeam_1.name + " has been deleted succesfully.");
+                    res.status(200).send({ message: "Team " + deleteTeam_1.name + " has been deleted successfully." });
                 }
                 return [3 /*break*/, 3];
             case 2:
-                error_3 = _a.sent();
-                res.status(400).send(error_3.message);
+                error_4 = _a.sent();
+                res.status(400).send(error_4.message);
                 return [3 /*break*/, 3];
             case 3: return [2 /*return*/];
         }
