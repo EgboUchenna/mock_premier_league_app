@@ -112,7 +112,7 @@ app.get('/', function (req, res) {
 });
 app.use('/api/v1', api_1.default);
 var PORT = process.env.PORT || 4040;
-var HOST = process.env.HOST || 'localhost';
+var HOST = process.env.PROD || 'localhost';
 app.listen(PORT, function () { return console.log("Server running on http://" + HOST + ":" + PORT); });
 exports.default = app;
 //# sourceMappingURL=app.js.map
