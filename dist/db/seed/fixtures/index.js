@@ -65,7 +65,7 @@ module.exports = [
     },
     {
         homeTeam: 'Westham',
-        awayTeam: ' Aston Villa',
+        awayTeam: 'Aston Villa',
         time: '1:30pm',
         homeScore: 0,
         awayScore: 0,
@@ -83,7 +83,7 @@ module.exports = [
     },
     {
         homeTeam: 'Bournemouth',
-        awayTeam: ' Wolves',
+        awayTeam: 'Wolves',
         time: '1:30pm',
         homeScore: 3,
         awayScore: 1,
