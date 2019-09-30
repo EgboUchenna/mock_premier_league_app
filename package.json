@@ -4,7 +4,7 @@
   "description": "Create an API that serves the latest scores of fixtures of matches in a “Mock Premier League”.",
   "main": "dist/app.js",
   "scripts": {
-    "start": "node dist/app.js",
+    "start": "tsc -w",
     "dev": "nodemon dist/app.js",
     "test": "jest --watch"
   },
