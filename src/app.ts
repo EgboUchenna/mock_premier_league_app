@@ -23,7 +23,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // DB CONFIG
-const connectionUri = process.env.NODE_ENV === 'test' ? process.env.TEST : process.env.PROD;
+const connectionUri = process.env.NODE_ENV === 'test' ? process.env.TEST : `${process.env.PROD}`;
 
 // Connect to MongoDB
 mongoose
