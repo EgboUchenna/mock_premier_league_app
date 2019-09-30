@@ -1,7 +1,6 @@
 // tslint:disable: import-name
 import express from 'express';
 import mongoose from 'mongoose';
-import redis from 'redis';
 import session from 'express-session';
 import connectRedis from 'connect-redis';
 import apiRouter from './routes/api';
@@ -14,7 +13,7 @@ import cors from 'cors';
 dotenv.config();
 
 const redisStore = connectRedis(session);
-const client = redis.createClient();
+const client = require('redis').createClient(process.env.REDIS_URL);
 
 const app = express();
 

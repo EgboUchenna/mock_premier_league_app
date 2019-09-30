@@ -42,7 +42,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // tslint:disable: import-name
 var express_1 = __importDefault(require("express"));
 var mongoose_1 = __importDefault(require("mongoose"));
-var redis_1 = __importDefault(require("redis"));
 var express_session_1 = __importDefault(require("express-session"));
 var connect_redis_1 = __importDefault(require("connect-redis"));
 var api_1 = __importDefault(require("./routes/api"));
@@ -53,7 +52,7 @@ var helmet_1 = __importDefault(require("helmet"));
 var cors_1 = __importDefault(require("cors"));
 dotenv_1.default.config();
 var redisStore = connect_redis_1.default(express_session_1.default);
-var client = redis_1.default.createClient();
+var client = require('redis').createClient(process.env.REDIS_URL);
 var app = express_1.default();
 // Body Parser middleware
 app.use(body_parser_1.default.urlencoded({ extended: false }));
