@@ -51,7 +51,6 @@ var index_1 = __importDefault(require("./db/index"));
 var body_parser_1 = __importDefault(require("body-parser"));
 var helmet_1 = __importDefault(require("helmet"));
 var cors_1 = __importDefault(require("cors"));
-var key = require('./config/keys').key;
 dotenv_1.default.config();
 var redisStore = connect_redis_1.default(express_session_1.default);
 var client = redis_1.default.createClient();
@@ -60,8 +59,7 @@ var app = express_1.default();
 app.use(body_parser_1.default.urlencoded({ extended: false }));
 app.use(body_parser_1.default.json());
 // DB CONFIG
-var db = require('./config/keys').mongoURI;
-var connectionUri = db ? db : process.env.TEST;
+var connectionUri = process.env.NODE_ENV === 'test' ? process.env.TEST : process.env.PROD;
 // Connect to MongoDB
 mongoose_1.default
     .connect(connectionUri, {
@@ -91,7 +89,7 @@ mongoose_1.default.set('useFindAndModify', false);
 mongoose_1.default.set('useCreateIndex', true);
 try {
     app.use(express_session_1.default({
-        secret: key,
+        secret: process.env.KEY,
         // create new redis store.
         store: new redisStore({
             client: client,

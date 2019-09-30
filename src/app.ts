@@ -11,7 +11,6 @@ import bodyParser from 'body-parser';
 import helmet from 'helmet';
 import cors from 'cors';
 
-const { key } = require('./config/keys');
 dotenv.config();
 
 const redisStore = connectRedis(session);
@@ -24,12 +23,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // DB CONFIG
-const db = require('./config/keys').mongoURI;
-const connectionUri = db ? db : process.env.TEST;
+const connectionUri = process.env.NODE_ENV === 'test' ? process.env.TEST : process.env.PROD;
 
 // Connect to MongoDB
 mongoose
-  .connect(connectionUri, {
+  .connect(connectionUri!, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
@@ -44,7 +42,7 @@ mongoose.set('useCreateIndex', true);
 try {
   app.use(
     session({
-      secret: key,
+      secret: process.env.KEY!,
       // create new redis store.
       store: new redisStore({
         client,
