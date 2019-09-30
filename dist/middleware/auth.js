@@ -41,7 +41,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 // tslint:disable: import-name
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-var key = require('../config/keys').key;
 var User_1 = require("../models/User");
 function auth(req, res, next) {
     return __awaiter(this, void 0, void 0, function () {
@@ -55,7 +54,7 @@ function auth(req, res, next) {
                     if (!payload) {
                         return [2 /*return*/, res.status(401).send({ message: 'Unauthorized Access' })];
                     }
-                    decoded = jsonwebtoken_1.default.verify(payload, key);
+                    decoded = jsonwebtoken_1.default.verify(payload, process.env.KEY);
                     return [4 /*yield*/, User_1.User.findById(decoded._id)];
                 case 1:
                     user = _a.sent();

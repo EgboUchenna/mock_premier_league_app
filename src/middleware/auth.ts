@@ -1,7 +1,6 @@
 // tslint:disable: import-name
 import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
-const { key } = require('../config/keys');
 import { User } from '../models/User';
 
 async function auth(req: any, res: Response, next: NextFunction) {
@@ -14,7 +13,7 @@ async function auth(req: any, res: Response, next: NextFunction) {
         );
       }
 
-      const decoded: any = jwt.verify(payload, key);
+      const decoded: any = jwt.verify(payload, process.env.KEY!);
       const user = await User.findById(decoded._id);
 
       if (user) {
