@@ -41,7 +41,7 @@ mongoose.set('useCreateIndex', true);
 try {
   app.use(
     session({
-      secret: process.env.KEY!,
+      secret: `${process.env.KEY}`,
       // create new redis store.
       store: new redisStore({
         client,

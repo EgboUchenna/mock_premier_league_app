@@ -88,7 +88,7 @@ mongoose_1.default.set('useFindAndModify', false);
 mongoose_1.default.set('useCreateIndex', true);
 try {
     app.use(express_session_1.default({
-        secret: process.env.KEY,
+        secret: "" + process.env.KEY,
         // create new redis store.
         store: new redisStore({
             client: client,
