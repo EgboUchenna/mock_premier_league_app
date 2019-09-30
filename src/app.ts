@@ -62,10 +62,14 @@ app.use(cors());
 app.use(helmet());
 
 // Use Routes
+app.get('/', (req, res) => {
+  res.send('Hello, Welcome to the Premier League Live!!!.\n');
+});
 app.use('/api/v1', apiRouter);
 
-const port = process.env.PORT || 4000;
+const PORT = process.env.PORT || 4000;
+const HOST = 'localhost';
 
-app.listen(port, () => console.log(`Server running on port ${port}`));
+app.listen(PORT, () => console.log(`Server running on http://${HOST}:${PORT}`));
 
 export default app;
