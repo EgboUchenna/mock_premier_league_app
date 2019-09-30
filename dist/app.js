@@ -107,8 +107,12 @@ catch (error) {
 app.use(cors_1.default());
 app.use(helmet_1.default());
 // Use Routes
+app.get('/', function (req, res) {
+    res.send('Hello, Welcome to the Premier League Live!!!.\n');
+});
 app.use('/api/v1', api_1.default);
-var port = process.env.PORT || 4000;
-app.listen(port, function () { return console.log("Server running on port " + port); });
+var PORT = process.env.PORT || 4000;
+var HOST = 'localhost';
+app.listen(PORT, function () { return console.log("Server running on http://" + HOST + ":" + PORT); });
 exports.default = app;
 //# sourceMappingURL=app.js.map
