@@ -39,76 +39,58 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-// tslint:disable: import-name
-var express_1 = __importDefault(require("express"));
-var mongoose_1 = __importDefault(require("mongoose"));
-var redis_1 = __importDefault(require("redis"));
-var express_session_1 = __importDefault(require("express-session"));
-var connect_redis_1 = __importDefault(require("connect-redis"));
-var api_1 = __importDefault(require("./routes/api"));
-var dotenv_1 = __importDefault(require("dotenv"));
-var index_1 = __importDefault(require("./db/index"));
-var body_parser_1 = __importDefault(require("body-parser"));
-var helmet_1 = __importDefault(require("helmet"));
-var cors_1 = __importDefault(require("cors"));
-dotenv_1.default.config();
-var redisStore = connect_redis_1.default(express_session_1.default);
-var client = redis_1.default.createClient();
-var app = express_1.default();
-// Body Parser middleware
-app.use(body_parser_1.default.urlencoded({ extended: false }));
-app.use(body_parser_1.default.json());
-// DB CONFIG
-var connectionUri = process.env.NODE_ENV === 'test' ? process.env.TEST : process.env.PROD;
-// Connect to MongoDB
-mongoose_1.default
-    .connect(connectionUri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-})
-    .then(function () { return __awaiter(void 0, void 0, void 0, function () {
-    var _a;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+var User_1 = require("../models/User");
+var user_1 = require("../validation/user");
+var bcrypt_1 = __importDefault(require("bcrypt"));
+exports.signup = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var error, _a, name_1, email, user, salt, _b, data, token, error_1, message;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
             case 0:
-                _a = process.env.NODE_ENV !== 'test';
-                if (!_a) return [3 /*break*/, 2];
-                return [4 /*yield*/, index_1.default()];
+                error = user_1.validateUser(req.body).error;
+                if (error)
+                    return [2 /*return*/, res.status(404).send({ error: error.details[0].message })];
+                _c.label = 1;
             case 1:
-                _a = (_b.sent());
-                _b.label = 2;
+                _c.trys.push([1, 6, , 7]);
+                _a = req.body, name_1 = _a.name, email = _a.email;
+                return [4 /*yield*/, User_1.User.findOne({ email: email })];
             case 2:
-                _a;
-                console.log('MongoDB connected');
-                return [2 /*return*/];
+                user = _c.sent();
+                if (user)
+                    return [2 /*return*/, res.status(400).send({ message: "Email already exists." })];
+                user = new User_1.User(req.body);
+                return [4 /*yield*/, bcrypt_1.default.genSalt(10)];
+            case 3:
+                salt = _c.sent();
+                _b = user;
+                return [4 /*yield*/, bcrypt_1.default.hash(user.password, salt)];
+            case 4:
+                _b.password = _c.sent();
+                return [4 /*yield*/, user.save()];
+            case 5:
+                _c.sent();
+                data = { name: name_1, email: email };
+                token = user.getAuthToken();
+                // save user token to redis store
+                if (req.session) {
+                    req.session[user._id] = { token: token, data: data };
+                }
+                res.send({
+                    data: data,
+                    token: token,
+                    output: 'Sign up successful.',
+                });
+                return [3 /*break*/, 7];
+            case 6:
+                error_1 = _c.sent();
+                message = error_1.message;
+                return [2 /*return*/, res.status(400).send({
+                        message: message,
+                        output: 'Sign up failed.',
+                    })];
+            case 7: return [2 /*return*/];
         }
     });
-}); })
-    .catch(function (err) { return console.log(err); });
-mongoose_1.default.set('useFindAndModify', false);
-mongoose_1.default.set('useCreateIndex', true);
-try {
-    app.use(express_session_1.default({
-        secret: process.env.KEY,
-        // create new redis store.
-        store: new redisStore({
-            client: client,
-            host: 'localhost',
-            port: 6379,
-            ttl: 1800,
-        }),
-        saveUninitialized: false,
-        resave: false,
-    }));
-}
-catch (error) {
-    console.log({ error: error });
-}
-app.use(cors_1.default());
-app.use(helmet_1.default());
-// Use Routes
-app.use('/api/v1', api_1.default);
-var port = process.env.PORT || 4000;
-app.listen(port, function () { return console.log("Server running on port " + port); });
-exports.default = app;
-//# sourceMappingURL=app.js.map
+}); };
+//# sourceMappingURL=signup.js.map

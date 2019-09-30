@@ -39,76 +39,38 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-// tslint:disable: import-name
-var express_1 = __importDefault(require("express"));
-var mongoose_1 = __importDefault(require("mongoose"));
-var redis_1 = __importDefault(require("redis"));
-var express_session_1 = __importDefault(require("express-session"));
-var connect_redis_1 = __importDefault(require("connect-redis"));
-var api_1 = __importDefault(require("./routes/api"));
-var dotenv_1 = __importDefault(require("dotenv"));
-var index_1 = __importDefault(require("./db/index"));
-var body_parser_1 = __importDefault(require("body-parser"));
-var helmet_1 = __importDefault(require("helmet"));
-var cors_1 = __importDefault(require("cors"));
-dotenv_1.default.config();
-var redisStore = connect_redis_1.default(express_session_1.default);
-var client = redis_1.default.createClient();
-var app = express_1.default();
-// Body Parser middleware
-app.use(body_parser_1.default.urlencoded({ extended: false }));
-app.use(body_parser_1.default.json());
-// DB CONFIG
-var connectionUri = process.env.NODE_ENV === 'test' ? process.env.TEST : process.env.PROD;
-// Connect to MongoDB
-mongoose_1.default
-    .connect(connectionUri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-})
-    .then(function () { return __awaiter(void 0, void 0, void 0, function () {
-    var _a;
+var User_1 = require("../models/User");
+var bcrypt_1 = __importDefault(require("bcrypt"));
+exports.login = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var _a, email, password, checkUser, passwordMatch, token;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
-                _a = process.env.NODE_ENV !== 'test';
-                if (!_a) return [3 /*break*/, 2];
-                return [4 /*yield*/, index_1.default()];
+                _a = req.body, email = _a.email, password = _a.password;
+                return [4 /*yield*/, User_1.User.findOne({ email: email })];
             case 1:
-                _a = (_b.sent());
-                _b.label = 2;
+                checkUser = _b.sent();
+                if (!checkUser)
+                    return [2 /*return*/, res.status(404).send({ message: 'Email does not exist.' })];
+                return [4 /*yield*/, bcrypt_1.default.compare(password, checkUser.password)];
             case 2:
-                _a;
-                console.log('MongoDB connected');
-                return [2 /*return*/];
+                passwordMatch = _b.sent();
+                if (!passwordMatch) {
+                    return [2 /*return*/, res.status(404).send({ message: 'Password is incorrect.' })];
+                }
+                token = checkUser.getAuthToken();
+                // save user session token on login
+                if (req.session) {
+                    req.session[checkUser._id] = {
+                        token: token,
+                        data: { email: email, name: checkUser.name },
+                    };
+                }
+                return [2 /*return*/, res.status(200).send({
+                        token: token,
+                        message: "Welcome " + checkUser.name,
+                    })];
         }
     });
-}); })
-    .catch(function (err) { return console.log(err); });
-mongoose_1.default.set('useFindAndModify', false);
-mongoose_1.default.set('useCreateIndex', true);
-try {
-    app.use(express_session_1.default({
-        secret: process.env.KEY,
-        // create new redis store.
-        store: new redisStore({
-            client: client,
-            host: 'localhost',
-            port: 6379,
-            ttl: 1800,
-        }),
-        saveUninitialized: false,
-        resave: false,
-    }));
-}
-catch (error) {
-    console.log({ error: error });
-}
-app.use(cors_1.default());
-app.use(helmet_1.default());
-// Use Routes
-app.use('/api/v1', api_1.default);
-var port = process.env.PORT || 4000;
-app.listen(port, function () { return console.log("Server running on port " + port); });
-exports.default = app;
-//# sourceMappingURL=app.js.map
+}); };
+//# sourceMappingURL=login.js.map
