@@ -59,7 +59,7 @@ var app = express_1.default();
 app.use(body_parser_1.default.urlencoded({ extended: false }));
 app.use(body_parser_1.default.json());
 // DB CONFIG
-var connectionUri = process.env.NODE_ENV === 'test' ? process.env.TEST : process.env.PROD;
+var connectionUri = process.env.NODE_ENV === 'test' ? process.env.TEST : "" + process.env.PROD;
 // Connect to MongoDB
 mongoose_1.default
     .connect(connectionUri, {
