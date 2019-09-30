@@ -67,8 +67,8 @@ app.get('/', (req, res) => {
 });
 app.use('/api/v1', apiRouter);
 
-const PORT = process.env.PORT || 4000;
-const HOST = 'localhost';
+const PORT = process.env.PORT || 4040;
+const HOST = process.env.HOST || 'localhost';
 
 app.listen(PORT, () => console.log(`Server running on http://${HOST}:${PORT}`));
 
