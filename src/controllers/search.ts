@@ -15,7 +15,7 @@ export const searchTeam = async (req: Request, res: Response) => {
       }
 
       if (!!team) {
-        return res.status(400).json({ message: `Invalid Input` });
+        return res.status(400).json({ message: `Invalid year.` });
       }
     } else {
       value = new RegExp(id, 'gi');
@@ -25,13 +25,14 @@ export const searchTeam = async (req: Request, res: Response) => {
         { coach: { $regex: value } },
         { stadium_name: { $regex: value } },
       ]);
+      console.log(team.length);
 
       if (team.length > 0) {
         return res.status(200).json({ message: team });
       }
 
       if (!!team) {
-        return res.status(400).json({ message: `Invalid Input` });
+        return res.status(400).json({ message: `Invalid Team` });
       }
     }
   } catch (error) {
@@ -46,11 +47,12 @@ export const searchFixture = async (req: Request, res: Response) => {
 
   try {
     const fixtures = await Fixture.find().populate(
-      'homeTeam awayTeam ',
+      'homeTeam awayTeam',
       'name coach link -_id',
     );
 
     const getFixtures = fixtures.filter((elem) => {
+
       if (
         // @ts-ignore
         value.test(elem.homeTeam['name']) ||
@@ -60,6 +62,8 @@ export const searchFixture = async (req: Request, res: Response) => {
         return elem;
       }
     });
+
+    console.log(getFixtures);
     if (getFixtures.length > 0) {
       return res.status(200).json({ message: getFixtures });
     }

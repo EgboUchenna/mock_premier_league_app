@@ -55,7 +55,7 @@ exports.searchTeam = function (req, res) { return __awaiter(void 0, void 0, void
                     return [2 /*return*/, res.status(200).json({ message: team })];
                 }
                 if (!!team) {
-                    return [2 /*return*/, res.status(400).json({ message: "Invalid Input" })];
+                    return [2 /*return*/, res.status(400).json({ message: "Invalid year." })];
                 }
                 return [3 /*break*/, 5];
             case 3:
@@ -67,11 +67,12 @@ exports.searchTeam = function (req, res) { return __awaiter(void 0, void 0, void
                     ])];
             case 4:
                 team = _a.sent();
+                console.log(team.length);
                 if (team.length > 0) {
                     return [2 /*return*/, res.status(200).json({ message: team })];
                 }
                 if (!!team) {
-                    return [2 /*return*/, res.status(400).json({ message: "Invalid Input" })];
+                    return [2 /*return*/, res.status(400).json({ message: "Invalid Team" })];
                 }
                 _a.label = 5;
             case 5: return [3 /*break*/, 7];
@@ -92,7 +93,7 @@ exports.searchFixture = function (req, res) { return __awaiter(void 0, void 0, v
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, Fixture_1.Fixture.find().populate('homeTeam awayTeam ', 'name coach link -_id')];
+                return [4 /*yield*/, Fixture_1.Fixture.find().populate('homeTeam awayTeam', 'name coach link -_id')];
             case 2:
                 fixtures = _a.sent();
                 getFixtures = fixtures.filter(function (elem) {
@@ -104,6 +105,7 @@ exports.searchFixture = function (req, res) { return __awaiter(void 0, void 0, v
                         return elem;
                     }
                 });
+                console.log(getFixtures);
                 if (getFixtures.length > 0) {
                     return [2 /*return*/, res.status(200).json({ message: getFixtures })];
                 }
