@@ -484,4 +484,4 @@ describe('Search Routes', function () {
         });
     });
 });
-//# sourceMappingURL=users.js.map
+//# sourceMappingURL=index.js.map

@@ -9,7 +9,6 @@ import auth from '../middleware/auth';
 import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 import seed from '../db';
-const { key } = require('../config/keys');
 
 let token: string;
 let adminToken: string;
@@ -150,7 +149,7 @@ mockedAuth.mockImplementation(
         );
       }
       // @ts-ignore
-      const decoded: any = jwt.verify(payload, key);
+      const decoded: any = jwt.verify(payload, process.env.KEY);
 
       // say the user has already logged in / sign up
       // @ts-ignore
@@ -186,7 +185,7 @@ describe('Fixtures Routes', () => {
       .get('/api/v1/fixtures')
       .set('Authorization', `Bearer ${token}`)
       .expect(res => {
-        expect(res.body.message).toHaveLength(5);
+        expect(res.body.message).toHaveLength(10);
       });
   });
 
@@ -395,6 +394,76 @@ describe('Teams Routes', () => {
         expect(res.body.message).toBe(
           `Team Liverpool has been deleted successfully.`,
         );
+      });
+  });
+});
+
+describe('Search Routes', () => {
+  it('All users can search team robustly (eg using coach name)', () => {
+    return request(app)
+      .get(`/api/v1/search/team/${'Jurgen'}`)
+      .expect(res => {
+        expect(res.body.message[0]).toMatchObject({
+          wins: 10,
+          losses: 0,
+          goals: 29,
+          name: 'Liverpool',
+          nick_name: 'The Reds',
+          coach: 'Jurgen Klopp',
+          website: 'https://www.liverpoolfc.com',
+          founded: 1892,
+          stadium_name: 'Anfield',
+          stadium_capacity: '54,074',
+        });
+      });
+  });
+
+  it('All users can search team robustly using team name', () => {
+    return request(app)
+      .get(`/api/v1/search/team/${'liver'}`)
+      .expect(res => {
+        expect(res.body.message[0]).toMatchObject({
+          wins: 10,
+          losses: 0,
+          goals: 29,
+          name: 'Liverpool',
+          nick_name: 'The Reds',
+          coach: 'Jurgen Klopp',
+          website: 'https://www.liverpoolfc.com',
+          founded: 1892,
+          stadium_name: 'Anfield',
+          stadium_capacity: '54,074',
+        });
+      });
+  });
+
+  it('All user can search team robustly using year founded', () => {
+    return request(app)
+      .get(`/api/v1/search/team/1980`)
+      .expect(res => {
+        expect(res.body.message[0]).toHaveProperty('coach');
+        expect(res.body.message[0]).toHaveProperty('nick_name');
+        expect(res.body.message[0]).toHaveProperty('wins');
+      });
+  });
+
+  it('All users can search fixtures robustly using team name', () => {
+    return request(app)
+      .get(`/api/v1/search/fixtures/${'Chelsea'}`)
+      .expect(res => {
+        expect(res.body.message).toHaveProperty('homeScore');
+        expect(res.body.message).toHaveProperty('awayScore');
+        expect(res.body.message).toHaveProperty('time');
+        expect(res.body.message).toHaveProperty('link');
+      });
+  });
+
+  it('returns invalid input if user input id not valid', () => {
+    return request(app)
+      .get(`/api/v1/search/fixtures/${'ckkjf'}`)
+      .expect(res => {
+        console.log(res.body);
+        expect(res.body.message).toBe('Invalid Input');
       });
   });
 });
