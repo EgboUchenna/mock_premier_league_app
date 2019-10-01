@@ -1,10 +1,10 @@
 # mock_premier_league_app
-# Software Developer Application Test
 
 Create a API that serves the latest scores of fixtures of matches in a “**Mock Premier League**”
 
-Link: https://mock-premier-league-app.herokuapp.com/
-Api endpoints link: https://www.getpostman.com/collections/444a946154c1c2c4162d
+Live App Link: https://mock-premier-league-app.herokuapp.com/
+
+API Endpoints Documentation: https://documenter.getpostman.com/view/6357029/SVn3tvmK
 
 ## User Types
 
@@ -36,6 +36,7 @@ There should be:
 - POSTMAN
 - Jest
 - Express
+- Heroku
 
 ## Tests
 
