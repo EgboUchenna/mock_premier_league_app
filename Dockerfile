@@ -31,4 +31,4 @@ ADD . /opt/app
 COPY . .
 
 EXPOSE 8080
-CMD [ "npm", "dev" ]
+CMD [ "npm", "start" ]
